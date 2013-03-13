@@ -1,5 +1,5 @@
-ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),warp2)
 LOCAL_PATH := $(call my-dir)
+
 
 ## Make libcamera
 
@@ -53,4 +53,3 @@ LOCAL_C_INCLUDES       := frameworks/base/services/ frameworks/base/include
 LOCAL_C_INCLUDES       += hardware/libhardware/include/ hardware
 
 include $(BUILD_SHARED_LIBRARY)
-endif

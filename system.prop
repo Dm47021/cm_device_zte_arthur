@@ -1,5 +1,5 @@
 #
-# system.prop for surf
+# system.prop for arthur
 #
 
 #wlan.chip.vendor=qcom
@@ -43,8 +43,6 @@ ro.cdma.default_numeric=311870
 
 mobiledata.interfaces=wlan0,rmnet0
 
-
-
 hwui.render_dirty_regions=false
 hwui.disable_vsync=false
 hwui.print_config=choice
@@ -68,8 +66,11 @@ persist.sys.use_dithering = 0
 debug.gr.numframebuffers=3
 
 
-#usb
-persist.sys.usb.config=mtp,adb
+# USB Mass Storage
+persist.sys.usb.config=mass_storage,adb
+persist.service.adb.enable=1
+# Don't set /proc/sys/vm/dirty_ratio to 0 when USB mounting
+ro.vold.umsdirtyratio=20
 persist.sys.usbcharger.enable=1
 
 #system props for the MM modules

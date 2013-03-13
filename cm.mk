@@ -6,6 +6,9 @@ TARGET_BOOTANIMATION_NAME := vertical-400x800
 # Inherit some common CM stuff.
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
+# Themes Support
+$(call inherit-product, vendor/tmobile/products/themes/themes-base.mk)
+
 # Inherit device configuration
 $(call inherit-product, device/zte/arthur/full_arthur.mk)
 
