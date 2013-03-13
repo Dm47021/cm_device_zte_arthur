@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mms_config version="4">
+    <bool name="enabledMMS">true</bool>
+    <int name="maxMessageSize">1048576</int>
+    <int name="maxImageHeight">960</int>
+    <int name="maxImageWidth">1280</int>
+    <int name="maxSlideNum">10</int>
+    <int name="defaultSMSMessagesPerThread">200</int>
+    <int name="defaultMMSMessagesPerThread">20</int>
+    <int name="minMessageCountPerThread">1</int>
+    <int name="maxMessageCountPerThread">5000</int>
+    <string name="uaProfUrl">http://device.sprintpcs.com/ZTE/ZTEN860ABC-BST/N860V1.0.0B08c.rdf</string>
+    <int name="recipientLimit">-1</int>
+    <int name="smsToMmsTextThreshold">7</int>
+    <bool name="enableMultipartSMS">true</bool>
+    <bool name="enableSlideDuration">true</bool>
+    <int name="maxMessageTextSize">-1</int>
+    <string name="userAgent">ZTE-N860-BST/Android-mm</string>
+    <int name="MmsReservedSize">6144</int>
+    <bool name="allowSendReadReport">false</bool>
+    <bool name="allowSetMmsSize">false</bool>
+    <string name="ProjectName">N860</string>
+    <string name="emailGatewayNumber">6245</string>
+</mms_config>
