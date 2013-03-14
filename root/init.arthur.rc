@@ -366,6 +366,7 @@ service loc_api_app /system/bin/loc_api_app
 
 service qmuxd /system/bin/qmuxd
     class main
+    user radio
 
 service netmgrd /system/bin/netmgrd
     class main
