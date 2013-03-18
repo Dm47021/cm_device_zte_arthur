@@ -12,8 +12,14 @@ wifi.supplicant_scan_interval=90
 dalvik.vm.dexopt-data-only=1
 com.qc.hardware=true
 
+# BASEBAND
+ro.build.baseband_version=N860B01
+ro.build.software_version=N860V1.0.0B08c
+ro.build.sw_internal_version=N860V1.0.0B20
+ro.build.baseband_version=SPRINTB01
+ro.build.software_version=GENERIC_SPRINTV1.0.0B01
 
-ro.baseband.arch=msm
+# Ril
 ro.ril.disable.power.collapse=0
 ro.telephony.ril_class=LGEQualcommRIL
 ro.telephony.ril.v3=qcomuiccstack,skipbrokendatacall,signalstrengt​h,datacall,skipnullaid
@@ -65,13 +71,25 @@ persist.sys.use_dithering = 0
 #possible screen glitch fix
 debug.gr.numframebuffers=3
 
-
-# USB Mass Storage
-persist.sys.usb.config=mass_storage,adb
+# ADB
 persist.service.adb.enable=1
 # Don't set /proc/sys/vm/dirty_ratio to 0 when USB mounting
 ro.vold.umsdirtyratio=20
 persist.sys.usbcharger.enable=1
+
+# UMS FIX
+persist.sys.usb.enable_switch=1
+persist.sys.usb.linux_switch=1
+persist.sys.usb.switch_pid=0x1354
+persist.sys.usb.linux_pid=0x1350
+persist.sys.usb.default.pid=0x83
+persist.sys.usb.switch_pid=0x1351
+persist.sys.usb.unique_sn=1
+persist.sys.usb.enable_cdrom=0x5656
+
+# Bluetooth
+net.bt.name=Android
+ro.qualcomm.bluetooth.dun=true
 
 #system props for the MM modules
 
