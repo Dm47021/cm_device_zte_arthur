@@ -2,22 +2,16 @@
 # system.prop for arthur
 #
 
-#wlan.chip.vendor=qcom
-#wlan.chip.version=wcnss
 wifi.interface=wlan0
-#wlan.driver.status=ok
+wlan.driver.status=ok
 wifi.supplicant_scan_interval=90
-#wifi.supplicant_no_update_ctrl=true
+wifi.supplicant_no_update_ctrl=true
+
+service.config.wifi=0
 
 dalvik.vm.dexopt-data-only=1
 com.qc.hardware=true
 
-# BASEBAND
-ro.build.baseband_version=N860B01
-ro.build.software_version=N860V1.0.0B08c
-ro.build.sw_internal_version=N860V1.0.0B20
-ro.build.baseband_version=SPRINTB01
-ro.build.software_version=GENERIC_SPRINTV1.0.0B01
 
 # Ril
 ro.ril.disable.power.collapse=0
@@ -186,7 +180,7 @@ net.dns1=8.8.8.8
 net.dns2=8.8.4.4
 
 # Memory
-persist.sys.purgeable_assets=1
+ro.dev.dmm=1
 
 
 

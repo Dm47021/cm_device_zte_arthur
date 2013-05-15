@@ -1,0 +1,9 @@
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME), arthur)
+
+# We Use a prebuilt librasdioif.ko because the one produced by the kernel doesnt work, something hroark did, only works with the module from his 7 kernel.
+include $(BUILD_PREBUILT)
+      device/zte/arthur/wifi_modules/librasdioif.ko:system/lib/modules/librasdioif.ko \
+      device/zte/arthur/wifi_modules/libra.ko:system/lib/modules/libra.ko \
+      device/zte/arthur/wifi_modules/libra_ftm.ko:system/lib/modules/libra_ftm.ko
+
+endif

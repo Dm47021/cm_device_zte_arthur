@@ -34,69 +34,20 @@
 # the script won't do anything. Otherwise (GUI is not going to Turn On
 # the Wifi) the script will load/unload the driver
 # This script will get called after post bootup.
-target=`getprop ro.product.device`
-case "$target" in
-    msm8660*)
-    exit 0
-    ;;
-    msm7630*)
-        wifishd=`getprop wlan.driver.status`
-        wlanchip=`cat /persist/wlan_chip_id`
-        echo "The WLAN Chip ID is $wlanchip"
-        case "$wlanchip" in
-            "WCN1314")
-             ln -s /system/lib/modules/volans/WCN1314_rf.ko /system/lib/modules/wlan.ko
-             ;;
-            "WCN1312")
-             ln -s /system/lib/modules/libra/libra.ko /system/lib/modules/wlan.ko
-	      ;;
-           *)
-            echo "********************************************************************"
-	     echo "*** Error:WI-FI chip ID is not specified in /persist/wlan_chip_id **"
-            echo "*******    WI-FI may not work    ***********************************"
-            ;;
-        esac
-        case "$wifishd" in
-            "ok")
-             ;;
-            "loading")
-            ;;
-           *)
-               case "$wlanchip" in
-                   "WCN1314")
-                    ;;
-
-                   "WCN1312")
-                        sh /system/etc/init.qcom.sdio.sh 1
-                        insmod /system/lib/modules/librasdioif.ko
-                        insmod /system/lib/modules/wlan.ko
-                        rmmod wlan
-                        rmmod librasdioif
-                        sh /system/etc/init.qcom.sdio.sh 0
-                        ;;
-                   *)
-	                ;;
-               esac
-        esac
-    ;;
-    msm7627*)
-        case "$wifishd" in
-            "ok")
-             ;;
-            "loading")
-             ;;
-            *)
-                sh /system/etc/init.qcom.sdio.sh 1
-                insmod /system/lib/modules/librasdioif.ko
-                insmod /system/lib/modules/wlan.ko
-                rmmod wlan.ko
-                rmmod librasdioif.ko
-                sh /system/etc/init.qcom.sdio.sh 0
-            ;;
-        esac
-    ;;
-
-    *)
-      ;;
+wifishd=`getprop wlan.driver.status`
+case "$wifishd" in
+    "ok")
+       ;;
+    "loading")
+       ;;
+     *)
+       sh /system/etc/init.qcom.sdio.sh 1
+       insmod /system/lib/modules/librasdioif.ko
+       insmod /system/lib/modules/libra.ko
+       rmmod libra.ko
+       rmmod librasdioif.ko
+       sh /system/etc/init.qcom.sdio.sh 0
+       ;;
 esac
+
 exit 0

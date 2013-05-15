@@ -1,52 +1,8 @@
-import init.usb.rc
-
-on early-init
-   mount debugfs debugfs /sys/kernel/debug
-
 on init
+
 # setup the global environment
-    mkdir /storage 0775 system sdcard_r
-    mkdir /storage/sdcard1 0000 system system
-    mkdir /storage/sdcard0 0000 system system
-    export EXTERNAL_STORAGE /storage/sdcard1
-
-    symlink /storage/sdcard1 /mnt/sdcard
-    symlink /storage/sdcard1 /sdcard
-    symlink /storage/sdcard0 /mnt/emmc
-    symlink /storage/sdcard0 /HWUserData
-
-# Create Bluetooh Filesystem Structure
-    chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
-    chown system system /sys/module/sco/parameters/disable_esco
-    chmod 0660 /sys/module/bluetooth_power/parameters/power
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chmod 0660 /proc/bluetooth/sleep/proto
-    chown bluetooth bluetooth /dev/ttyHS0
-    chmod 0666 /dev/ttyHS0
-    chown bluetooth bluetooth /sys/devices/platform/msm_serial_hs.0/clock
-    chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
-
-# Override ro.carrier with Operator Name ,ZTE_BOOT_LIWEI_20111010
-    setprop ro.carrier Sprint
-
-    setprop wifi.interface wlan0
-
-#Set SUID bit for usbhub
-    chmod 4755 /system/bin/usbhub
-    chmod 755 /system/bin/usbhub_init
-
-# port-bridge mod
-    chmod 0660 /dev/smd0
-    chown system system /dev/smd0
-
-    chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
-
-    # For bridgemgr daemon to inform the USB driver of the correct transport
-    chown radio radio /sys/class/android_usb/f_rmnet_smd_sdio/transport
-    
+    export EXTERNAL_STORAGE /mnt/sdcard
+	
     mkdir /persist 0771 system system
     mkdir /cache 0770 system cache
     mkdir /persist 0771 system system
@@ -54,22 +10,18 @@ on init
     write /proc/sys/kernel/sched_wakeup_granularity_ns 100000
     write /proc/sys/kernel/sched_min_granularity_ns 100000
 	
-# create mountpoints
+	# create mountpoints
     mkdir /mnt 0775 root system
     mkdir /mnt/sdcard 0000 system system
     mkdir /mnt/sdcard1 0000 system system
     mkdir /sd-ext 0771 system system
+	
+    # Backwards Compat - XXX: Going away in G*
+        symlink /mnt/sdcard /sdcard
 
-# Setup Bootpulse
-    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chown system system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
-    chmod 0644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chmod 0644 /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
-
-    chown system system /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
-    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
-    chmod 0644 /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
-    chmod 0644 /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+# ZTE_SYS_CHENXIHUA_001:chenxihua control read of /dev/log/system
+    chmod 0622 /dev/log/system
+# ZTE_SYS_CHENXIHUA_001 end
 
 on emmc-fs
     wait /dev/block/mmcblk0p15
@@ -90,11 +42,11 @@ on emmc-fs
     exec /system/bin/sh -c "/system/bin/ext4check.sh CACHE /dev/block/mmcblk0p17"    
     mount ext4 /dev/block/mmcblk0p17 /cache nosuid nodev barrier=1
 
-# msm specific files that need to be created on /data
 on post-fs
-
-    mkdir /data/media 0775 media_rw media_rw
-    chown media_rw media_rw /data/media 
+############################################################
+# This is also in the init.rc in "on post-fs-data" but if we
+# do not have this section here, the phone will not
+# boot with an empty data partition
 
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
@@ -116,73 +68,18 @@ on post-fs
 
     write /proc/apanic_console 1
 
-mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
-
-# Create the directories used by the Wireless subsystem
+    # create basic filesystem structure
+    mkdir /data/misc 01771 system misc
+    mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
+    mkdir /data/misc/bluetooth 0770 system system
+    mkdir /data/misc/keystore 0700 keystore keystore
+    mkdir /data/misc/keychain 0771 system system
+    mkdir /data/misc/vpn 0770 system vpn
+    mkdir /data/misc/systemkeys 0700 system system
+    # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
-    mkdir /data/misc/dhcp 0770 dhcp dhcp
-    chown dhcp dhcp /data/misc/dhcp
-
-chown dhcp system /data/misc/dhcp
-    mkdir /data/system 0775 system system
-  
-#wpa_supplicant control socket for android wifi.c (android private socket) 
-    chmod 0770 /data/misc/wifi
-    chmod 0777 /system/etc/wifi/cpwpaconf.sh
-    chmod 0777 /data/misc/wifi/wpa_supplicant.conf 
-    chown wifi wifi /data/misc/wifi 
-    chown wifi wifi /data/misc/wifi/wpa_supplicant.conf 
-    mkdir /data/misc/dhcp 0770 dhcp dhcp
-    chown dhcp dhcp /data/misc/dhcp
-    
-    #Provide the access to hostapd.conf only to root and group
-    chmod 0660 /data/hostapd/hostapd.conf
-
-# Create directory used by audio subsystem
-    mkdir /data/misc/audio 0770 audio audio
-
-# Mounting of persist is moved to 'on emmc-fs' and 'on fs' sections
-    # We chown/chmod /persist again so because mount is run as root + defaults
-    chown system system /carrier
-    chmod 0771 /carrier
-    chown system system /persist
-    chmod 0771 /persist
-    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.2/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
-
-    # Chown polling nodes as needed from UI running on system server
-    chown system system /sys/devices/platform/msm_sdcc.1/polling
-    chown system system /sys/devices/platform/msm_sdcc.2/polling
-    chown system system /sys/devices/platform/msm_sdcc.3/polling
-    chown system system /sys/devices/platform/msm_sdcc.4/polling
-
-# Create directories for wiper services
-    mkdir /data/wpstiles/ 0777 shell
-    mkdir /etc/wiper 0775 location qcom_oncrpc
-
-# Create directories for gpsone_daemon services
-    mkdir /data/gpsone_d 0770 gpsone_d qcom_oncrpc
-    mkdir /etc/gpsone_d 0770 gpsone_d qcom_oncrpc
-
-#Create directory from IMS services
-    mkdir /data/shared 0755
-    chown system system /data/shared
-
-    chown system  system /sys/bus/i2c/devices/i2c-4/4-000f/enable
-    chown system  system /sys/bus/i2c/devices/i2c-4/4-000f/poll
-
-# Change owner&&group for AKM devices
-    chown system  system /sys/class/compass/akm8962/enable_acc
-    chown system  system /sys/class/compass/akm8962/enable_mag
-    chown system  system /sys/class/compass/akm8962/enable_ori
-    chown system  system /sys/class/compass/akm8962/delay_acc
-    chown system  system /sys/class/compass/akm8962/delay_mag
-    chown system  system /sys/class/compass/akm8962/delay_ori	
-    chown system  system /sys/class/compass/akm8962/accel
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    mkdir /data/local 0751 root root
 
     # For security reasons, /data/local/tmp should always be empty.
     # Do not place files or directories in /data/local/tmp
@@ -219,19 +116,68 @@ chown dhcp system /data/misc/dhcp
     # Set indication (checked by vold) that we have finished this action
     #setprop vold.post_fs_data_done 1
 
+# Include extra init file
+    import /init.cm.rc
+
+
 #######################################################
 
-    chown system system /sys/class/android_usb/android0/f_mass_storage/lun/file
-    chmod 0660 /sys/class/android_usb/android0/f_mass_storage/lun/file
-    chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
-    chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
+    # Mounting of persist is moved to 'on emmc-fs' and 'on fs' sections
+    # We chown/chmod /persist again so because mount is run as root + defaults
+    chown system system /persist
+    chmod 0771 /persist
+    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.2/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
+
+    # Chown polling nodes as needed from UI running on system server
+    chown system system /sys/devices/platform/msm_sdcc.1/polling
+    chown system system /sys/devices/platform/msm_sdcc.2/polling
+    chown system system /sys/devices/platform/msm_sdcc.3/polling
+    chown system system /sys/devices/platform/msm_sdcc.4/polling
+    chmod 0770 /cache
+
 
     chmod 0666 /sys/class/rfkill/rfkill1/state
     chmod 0666 /system/etc/hostapd/hostapd.conf
 
+    # WIFI filesystem structure
+    mkdir /system/etc/wifi 0770 wifi wifi 
+    chmod 0770 /system/etc/wifi 
+    chmod 0660 /system/etc/wifi/wpa_supplicant.conf 
+    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf 
+    
+    #wpa_supplicant control socket for android wifi.c (android private socket) 
+    mkdir /data/misc/wifi 0770 wifi wifi 
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi 
+    chmod 0770 /data/misc/wifi
+    chmod 0777 /system/etc/wifi/cpwpaconf.sh
+    chmod 0777 /data/misc/wifi/wpa_supplicant.conf 
+    chown wifi wifi /data/misc/wifi 
+    chown wifi wifi /data/misc/wifi/wpa_supplicant.conf 
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+    symlink /persist/qcom_wlan_nv.bin /etc/firmware/wlan/qcom_wlan_nv.bin
+
+    #Provide the access to hostapd.conf only to root and group
+    chmod 0660 /data/hostapd/hostapd.conf
+
+    #port-bridge
+    chmod 0660 /dev/smd0
+    chown system system /dev/smd0
+
+    chmod 0660 /dev/ttyGS0
+    chown system system /dev/ttyGS0
+
+    chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
+
     chown root system /sys/module/g_android/parameters/product_id
     chmod 0664 /sys/module/g_android/parameters/product_id
     mkdir /data/radio 0770 radio radio
+
+    #For netmgr daemon to inform the USB driver of the correct transport
+    chown radio radio /sys/class/usb_composite/rmnet_smd_sdio/transport
 
 # create the OMA directories, so as to enforce our permissions
     mkdir /data/oma 0777
@@ -258,6 +204,7 @@ chown dhcp system /data/misc/dhcp
     write /proc/sys/net/core/rmem_max  262144
     write /proc/sys/net/core/wmem_max  262144
 
+
 on boot-pause
     exec system/bin/battery_charging
 
@@ -270,7 +217,8 @@ on boot
     chmod 0774 /sys/class/leds/flashlight/brightness
 #ZTE_TORCH_YTC_20110913 end
 
-# THIS IS NEEDED BECAUSE ZTE DECIDED TO DISABLE USB FUNCTIONS IN THE KERNEL
+########### HROARK MOD 1 ##################################################
+# THIS IS NEED BECAUSE ZTE DECIDED TO DISABLE USB FUNCTIONS THE THE KERNEL
 # UNTIL  WE HAVE WORKING KERNEL SOURCE CODE WE NEED THIS FOR ADB AND UMS 
 exec /sbin/usbconfig adb
 write /sys/class/android_usb/android0/enable 0
@@ -282,10 +230,11 @@ write /sys/class/android_usb/android0/enable 1
 start adbd
 setprop sys.usb.state adb
 
+########### END HROARK MOD 1 ###############################################
+
 ########### HROARK NOTES  ##################################################
 #CynanogenMod freezes after 2 minuted if this service does not exsist
 service rmt_storage /sbin/rmt_storage /dev/block/mmcblk0p10 /dev/block/mmcblk0p11
-    class main
     user root
     disabled
 
@@ -300,68 +249,141 @@ on property:init.svc.qcom-sh=stopped
     exec /system/bin/sh -c "/sbin/membank.sh"
 
 ########### END HROARK MOD 2 ###############################################
+    mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
+    chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill1/state
+    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+    chown bluetooth bluetooth /proc/bcm/sleep/proto
+    chown system system /sys/module/sco/parameters/disable_esco
+    chmod 0660 /sys/module/bluetooth_power/parameters/power
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chmod 0660 /sys/class/rfkill/rfkill1/state
+    chmod 0660 /proc/bluetooth/sleep/proto
+    chmod 0660 /proc/bcm/sleep/proto
+    chown bluetooth bluetooth /dev/ttyHS0
+    chmod 0660 /dev/ttyHS0
+    chown bluetooth bluetooth /sys/devices/platform/msm_serial_hs.0/clock
+    chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
+
+     # Create directories for wiper services
+    mkdir /data/wpstiles/ 0777 shell
+    mkdir /etc/wiper 0775 location qcom_oncrpc
+
+     # Create directories for gpsone_daemon services
+    mkdir /data/gpsone_d 0770 gpsone_d qcom_oncrpc
+    mkdir /etc/gpsone_d 0770 gpsone_d qcom_oncrpc
+
+    #Set SUID bit for usbhub
+    chmod 0755 /system/bin/usbhub
+    chmod 755 /system/bin/usbhub_init
 
     #Set SUID bit for diag_mdlog
     chmod 0755 /system/bin/diag_mdlog
     
+    #ZTE_GPS_LPZ_20110723 BEGIN
+    #Set SUID bit for loc_api_app
+    #chmod 0755 /system/bin/loc_api_app
+    #ZTE_GPS_LPZ_20110723 END
+    
+    #ZTE_TORCH_YTC_20110913 BEGIN
     chown system system /sys/class/leds/flashlight/brightness
     chmod 0774 /sys/class/leds/flashlight/brightness
+    #ZTE_TORCH_YTC_20110913 end
     
     #Provide the access to hostapd.conf only to root and group
     mkdir /data/hostapd 0770 hostapd hostapd
     chmod 0660 /data/hostapd/hostapd.conf
     
+    #ZTE_ALSPRX start  
     mkdir /data/misc/prox 0777 radio radio   
     chmod 0777  /dev/taos    
-		
-    chmod 0777 /dev/akm8962_aot
+	#ZTE_ALSPRX end
+	
+	#ZTE_SENSORS_FYA_001 , begin, 20110315	
+	chmod 0777 /dev/akm8962_aot
     chmod 0777 /dev/akm8962_dev
-    chmod 0777 /dev/lis302dl
-    chmod 0777 /dev/adxl34x
+	chmod 0777 /dev/lis302dl
+	chmod 0777 /dev/adxl34x
+	#ZTE_SENSORS_FYA_001 , end  , 20110315
 
     chmod 0664 /dev/accel
     chmod 0664 /dev/compass_aot
     chmod 0664 /dev/light
     chmod 0664 /dev/compass_dev
     chmod 0664 /dev/proximity
-    chmod 0664 /dev/akm8975_dev
 
-    chmod 664 /dev/input/event1
-    chmod 664 /dev/input/event2
-	
+#To allow interfaces to get v6 address when tethering is enabled
+    write /proc/sys/net/ipv6/conf/rmnet0/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet1/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet2/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet3/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet4/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet5/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet6/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet7/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio0/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio1/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio2/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio3/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio4/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio5/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio6/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio7/accept_ra 2
+
+# Export GPIO56 for fusion targets to enable/disable hub
+service usbhub_init /system/bin/usbhub_init
+   user root
+   disabled
+   oneshot
+
+on property:ro.product.device=msm7630_fusion
+    start usbhub_init
+
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
 
 on property:init.svc.bluetoothd=running
     write /sys/devices/virtual/bluetooth/hci0/idle_timeout 7000
     start btwlancoex
+    start amp_load
 
 on property:init.svc.bluetoothd=stopped
+    start amp_unload
     stop btwlancoex
+
+service cnd /system/bin/cnd
+    class main
+    socket cnd stream 660 root radio
 
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class main
     user bluetooth
-    group qcom_oncrpc bluetooth net_bt_admin system
+    group qcom_oncrpc bluetooth net_bt_admin
     disabled
     oneshot
 
-service sapd /system/bin/sdptool add --channel=15 SAP
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
+service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
+    class main
     disabled
     oneshot
 
 service dund /system/bin/sdptool add --channel=1 DUN
-    class late_start
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
     oneshot
 
-service port-bridge /system/bin/port-bridge /dev/smd 0 /dev/ttyGS0
-    class late_start
+service bridgemgrd /system/bin/bridgemgrd
+    class main
+    user radio
+    group radio
+    disabled
+
+service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
+    class main
     user system
     group system inet
     disabled
@@ -374,6 +396,77 @@ on property:ro.baseband="msm"
 on property:ro.baseband="unknown"
     start port-bridge
 
+service qmiproxy /system/bin/qmiproxy
+    class main
+    user radio
+    group radio
+#   disabled
+
+service qmuxd /system/bin/qmuxd
+    class main
+    user radio
+    group radio
+#    disabled
+
+service netmgrd /system/bin/netmgrd
+ # 20120130 eddie.kim@lge.com
+ # disabled
+
+on property:ro.use_data_netmgrd=false
+    # netmgr not supported on specific target
+    stop netmgrd
+
+service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
+    class main
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service amp_init /system/bin/amploader -i
+    class main
+    user root
+    disabled
+    oneshot
+
+service amp_load /system/bin/amploader -l 7000
+    class main
+    user root
+    disabled
+    oneshot
+
+service amp_unload /system/bin/amploader -u
+    class main
+    user root
+    disabled
+    oneshot
+
+service cpwpaconf /system/bin/sh /system/etc/wifi/cpwpaconf.sh
+    class main
+    user root
+    group root
+    oneshot
+    disabled
+
+on property:wifi.interface=wlan0
+    start cpwpaconf
+
+service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -dd
+    class main
+    group system wifi inet
+    socket wpa_wlan0 dgram 660 wifi wifi
+    disabled
+    oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -BKAL
+    class main
+    disabled
+    oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
 service at-daemon /system/bin/at-daemon
     class main
 
@@ -382,30 +475,6 @@ service loc_api_app /system/bin/loc_api_app
     class main
     user root
 
-service qmuxd /system/bin/qmuxd
-    class main
-    user radio
-    group radio
-
-service netmgrd /system/bin/netmgrd
-    class late_start
-    disabled
-
-on property:ro.use_data_netmgrd=false
-    # netmgr not supported on specific target
-    stop netmgrd
-
-service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin inet net_admin net_raw
-    disabled
-    oneshot
-
-service dhcpcd_bnep0 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
 service wiperiface /system/bin/wiperiface
     class main
     user location
@@ -413,8 +482,8 @@ service wiperiface /system/bin/wiperiface
     oneshot
 
 service gpsone_daemon /system/bin/gpsone_daemon
-    user system
-    group qcom_oncrpc inet
+    user root
+    group qcom_oncrpc
     disabled
 
 service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
@@ -424,16 +493,47 @@ service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     disabled
     oneshot
 
-service qcom-sh /system/bin/sh /init.qcom.sh 1
-    class core 
+on property:crypto.driver.load=1
+     insmod /system/lib/modules/qce.ko
+     insmod /system/lib/modules/qcedev.ko
+
+on property:crypto.driver.load=0
+     exec /system/bin/rmmod qcedev.ko
+     exec /system/bin/rmmod qce.ko
+
+service qcom-sh /system/bin/sh /init.qcom.sh
+    class core
     user root
     oneshot
-	
+
 service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
-    class late_start
+    class core
     user root
     disabled
     oneshot
+
+service qcom-wifi /system/bin/sh /system/etc/init.qcom.wifi.sh
+    class core
+    user root
+    disabled
+    oneshot
+
+service akmd /system/bin/akmd8962
+    class main
+    user root
+    oneshot
+
+on property:init.svc.bootanim=stopped
+    start qcom-post-boot
+#    start qcom-wifi
+
+service ckpd /system/bin/CKPD-daemon
+    class main
+    disabled
+    onrestart /system/bin/log -t RIL-CKPD -p w "CKPD daemon restarted"
+
+on property:ro.service.ckpd.enable=1
+    start ckpd
     
 service getlog /system/bin/getlogtofile
     class main
@@ -442,6 +542,7 @@ service getlog /system/bin/getlogtofile
     oneshot
 
 service bttestmode /system/bin/sh /system/bin/bt_testmode.sh
+    class main
     user root
     oneshot
     disabled    
@@ -451,14 +552,10 @@ on property:persist.sys.ztelog.enable=1
 
 on property:persist.sys.ztelog.enable=0
     stop getlog
-#ZTE_LOG_CXH_0322
 
-service qcom-wifi /system/bin/sh /system/etc/init.qcom.wifi.sh
-    class late_start
-    oneshot
 
-on property:init.svc.bootanim=stopped
-    start qcom-post-boot
+on property:ro.service.ckpd.enable=1
+    start ckpd
 
 service hdmid /system/bin/hdmid
     class main
@@ -468,6 +565,22 @@ service hdmid /system/bin/hdmid
 on property:ro.hdmi.enable=true
     start hdmid
 
+service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
+    class main
+    user root
+    group root
+    oneshot
+    disabled
+
+service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
+    class main
+    group radio
+    disabled
+    oneshot
+
+on property:persist.data.ds_fmc_app.mode=1
+    start ds_fmc_appd
+
 service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
     class main
     user system
@@ -476,23 +589,6 @@ service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
 
 on property:persist.ims.regmanager.mode=1
     start ims_regmanager
-
-service ckpd /system/bin/CKPD-daemon
-    class main
-    disabled
-    onrestart /system/bin/log -t RIL-CKPD -p w "CKPD daemon restarted"
-
-on property:ro.service.ckpd.enable=1
-    start ckpd
-
-service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
-    class late_start
-    group radio
-    disabled
-    oneshot
-
-on property:persist.data.ds_fmc_app.mode=1
-    start ds_fmc_appd
 
 on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
@@ -518,64 +614,79 @@ on property:persist.timed.enable=true
     mkdir /data/time/ 0700
     start time_daemon
 
-service ftp /system/bin/sdptool add --psm=5257 --channel=20 FTP
-    class late_start
+service ftp /system/bin/sdptool add --channel=20 FTP
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
     oneshot
 
-service map0 /system/bin/sdptool add --channel=16 MAS0
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service map1 /system/bin/sdptool add --channel=17 MAS1
-    class late_start
+service map /system/bin/sdptool add --channel=16 MAS
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
     oneshot
 
 service ril-daemon1 /system/bin/rild -c 1
-    class late_start
+    class main
     socket rild1 stream 660 root radio
     socket rild-debug1 stream 660 radio system
     user root
     disabled
     group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
 
+service hfag /system/bin/sdptool add --channel=10 HFAG
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service hsag /system/bin/sdptool add --channel=11 HSAG
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service opush /system/bin/sdptool add --channel=12 OPUSH
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service pbap /system/bin/sdptool add --channel=19 PBAP
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
 service proximity_init /system/bin/proximity.init -r
     class main
     disabled
     oneshot
+
+service sprintdiag /system/bin/sprintdiag
+    class main
+    user root
+    group radio cache inet misc audio qcom_oncrpc diag
     
 on property:dev.bootcomplete=1
     start proximity_init
 
-
-service akmd /system/bin/akmd8962 -m 2 
-    class main
-    oneshot
-
-# ZTE_DATA_TCP_MTU 20110727
 setprop persist.data_netmgrd_mtu 1480
 
-setprop persist.telephony.support_ipv6 false
-
-#ZTE_RIL_RJG_20100804 begin
 service sdlog-daemon /system/bin/sdlog
     class main
     disabled
 
 on property:persist.service.sdlog.enable=1
     start sdlog-daemon
-
     
 service DrmHost /system/bin/DrmHost
-
 on property:ro.gcftest=1
     stop DrmHost
 
@@ -585,23 +696,4 @@ service drmserver /system/bin/drmserver
     user system
     group system drm
 start drmserver
-
-service cpwpaconf /system/bin/sh /system/etc/wifi/cpwpaconf.sh
-    class main
-    user root
-    group root
-    oneshot
-    disabled
-
-service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
-    class main
-    user root
-    group root
-    oneshot
-    disabled
-
-service sprintdiag /system/bin/sprintdiag
-    class main
-    user root
-    group radio cache inet misc audio qcom_oncrpc diag
 

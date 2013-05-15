@@ -1,16 +1,18 @@
 # Release name
 PRODUCT_RELEASE_NAME := arthur
 
-TARGET_BOOTANIMATION_NAME := vertical-400x800
-
 # Inherit some common CM stuff.
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
-# Themes Support
-$(call inherit-product, vendor/tmobile/products/themes/themes-base.mk)
-
 # Inherit device configuration
 $(call inherit-product, device/zte/arthur/full_arthur.mk)
+
+# Set up Propper APNS
+PRODUCT_COPY_FILES+= \
+    device/zte/arthur/prebuilt/files/etc/apns-conf.xml:system/etc/apns-conf.xml
+
+# inherit Osiris Mods
+#$(call inherit-product, vendor/osiris/prebullt/osirismod.mk)
 
 ## Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := arthur

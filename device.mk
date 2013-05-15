@@ -42,7 +42,8 @@ PRODUCT_PACKAGES += \
         copybit.msm7x30 \
         gralloc.msm7x30 \
         hwcomposer.msm7x30 \
-        libgenlock 
+        libgenlock \
+        libtilerenderer 
 
 # OMX
 PRODUCT_PACKAGES += \
@@ -57,50 +58,44 @@ PRODUCT_PACKAGES += \
 	libOmxVidEnc \
         libstagefrighthw 
 
+# Audio
+PRODUCT_PACKAGES += \
+        audio.a2dp.msm7x30 \
+        audio_policy.msm7x30 \
+        audio.primary.msm7x30 \
+        libaudioutils
+
+## Bluetooth
+PRODUCT_PACKAGES += \
+	hciattach \
+	hciconfig \
+	hcitool 
+
 # Camera
 PRODUCT_PACKAGES += \
     LegacyCamera \
-    camera.7x30 \
-    libcamera
+    camera.msm7x30 \
 
 # gps
 PRODUCT_PACKAGES += \
         librpc \
         gps.default 
 
-# Sensors
-PRODUCT_PACKAGES += \
-        sensors.default \
- 
-# WarpedParts App
-PRODUCT_PACKAGES += \
-        WarpedParts \
-
-# Akm drivers / LEDS
-PRODUCT_COPY_FILES += \
-   device/zte/arthur/prebuilt/b08c/bin/akmd8962:system/bin/akmd8962 \
-   device/zte/arthur/prebuilt/b08c/lib/hw/lights.msm7k.so:system/lib/hw/lights.msm7x30.so 
-
 # Power HAL
 PRODUCT_PACKAGES += \
         power.msm7x30
 
-# Audio
+# Sensors 
 PRODUCT_PACKAGES += \
-        audio_policy.msm7x30 \
-        audio.primary.msm7x30 \
-        libaudioutils 
+        sensors.msm7x30
 
-PRODUCT_COPY_FILES += \
-	device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:obj/lib/libaudioalsa.so \
-	device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:system/lib/libaudioalsa.so
-
-## Bluetooth
+# WiFi
 PRODUCT_PACKAGES += \
-	hciattach \
-	hciconfig \
-	hcitool \
-	hdmid
+    libwpa_client 
+ 
+# WarpedParts App
+PRODUCT_PACKAGES += \
+        WarpedParts 
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
@@ -172,22 +167,14 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/root/sbin/rmt_storage:/recovery/root/sbin/rmt_storage \
 	device/zte/arthur/root/sbin/usbconfig:/recovery/root/sbin/usbconfig
 
-# WiFi
-PRODUCT_PACKAGES += \
-    libwpa_client
-
 PRODUCT_COPY_FILES += \
-	device/zte/arthur/prebuilt/b08c/etc/dhcpcd/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
+        device/zte/arthur/wpa_supplicant.conf:/system/etc/wifi/wpa_supplicant.conf \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/cfg.dat:system/etc/firmware/wlan/cfg.dat \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_cfg.ini:system/etc/firmware/wlan/qcom_cfg.ini \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_fw.bin:system/etc/firmware/wlan/qcom_fw.bin \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_wapi_fw.bin:system/etc/firmware/wlan/qcom_wapi_fw.bin \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_wlan_nv.bin:system/etc/firmware/wlan/qcom_wlan_nv.bin \
-	device/zte/arthur/prebuilt/files/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-	device/zte/arthur/prebuilt/files/etc/wifi/cpwpaconf.sh:system/etc/wifi/cpwpaconf.sh \
-	device/zte/arthur/prebuilt/files/lib/modules/libra.ko:system/lib/modules/libra.ko \
-	device/zte/arthur/prebuilt/files/lib/modules/libra_ftm.ko:system/lib/modules/libra_ftm.ko \
-	device/zte/arthur/prebuilt/files/lib/modules/librasdioif.ko:system/lib/modules/librasdioif.ko \
+	device/zte/arthur/prebuilt/files/etc/wifi/cpwpaconf.sh:system/etc/wifi/cpwpaconf.sh
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -250,7 +237,9 @@ PRODUCT_COPY_FILES += \
     device/zte/arthur/prebuilt/files/lib/libC2D2.so:system/lib/libC2D2.so \
     device/zte/arthur/prebuilt/files/lib/libgsl.so:system/lib/libgsl.so \
     device/zte/arthur/prebuilt/files/lib/libOpenVG.so:system/lib/libOpenVG.so \
-    device/zte/arthur/prebuilt/files/lib/libsc-a2xx.so:system/lib/libsc-a2xx.so
+    device/zte/arthur/prebuilt/files/lib/libsc-a2xx.so:system/lib/libsc-a2xx.so \
+    device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:obj/lib/libaudioalsa.so \
+    device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:system/lib/libaudioalsa.so
 
 # Legacy Touch Screen
 PRODUCT_COPY_FILES += \
@@ -344,13 +333,8 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/hostapd/hostapd.accept:system/hostapd/hostapd.accept \
 	device/zte/arthur/prebuilt/b08c/hostapd/hostapd.conf:system/hostapd/hostapd.conf \
 	device/zte/arthur/prebuilt/b08c/hostapd/hostapd.deny:system/hostapd/hostapd.deny \
-	device/zte/arthur/prebuilt/b08c/qcom/softap/hostapd_default.conf:system/qcom/softap/hostapd_default.conf \
+	device/zte/arthur/prebuilt/b08c/qcom/softap/hostapd_default.conf:system/etc/firmware/wlan/hostapd_default.conf \
 	device/zte/arthur/prebuilt/b08c/lib/libQWiFiSoftApCfg.so:system/lib/libQWiFiSoftApCfg.so
-
-# iptables
-PRODUCT_PACKAGES += \
-	ip6tables \
-	iptables \
 
 # B08c bin
 PRODUCT_COPY_FILES += \
@@ -378,6 +362,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/bin/thermald:system/bin/thermald \
 	device/zte/arthur/prebuilt/b08c/bin/usbhub:system/bin/usbhub \
 	device/zte/arthur/prebuilt/b08c/bin/usbhub_init:system/bin/usbhub_init \
+        device/zte/arthur/prebuilt/b08c/bin/akmd8962:system/bin/akmd8962
 
 # B08c etc
 PRODUCT_COPY_FILES += \
@@ -389,6 +374,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.sdio.sh:system/etc/init.qcom.sdio.sh \
         device/zte/arthur/prebuilt/b08c/etc/init.qcom.wifi.sh:system/etc/init.qcom.wifi.sh \
 	device/zte/arthur/prebuilt/b08c/etc/vold.fstab:system/etc/vold.fstab \
+        device/zte/arthur/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
 
 # B08c lib
 PRODUCT_COPY_FILES += \
@@ -404,3 +390,13 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxQcelp13Dec.so:system/lib/libOmxQcelp13Dec.so \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxQcelp13Enc.so:system/lib/libOmxQcelp13Enc.so \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxWmaDec.so:system/lib/libOmxWmaDec.so \
+        device/zte/arthur/prebuilt/files/lib/hw/lights.msm7x30.so:system/lib/hw/lights.msm7x30.so \
+
+
+## PREBUILT WiFi Modules
+
+# We Use a prebuilt librasdioif.ko because the one produced by the kernel doesnt work, something hroark did, only works with the module from his 7 kernel.
+PRODUCT_COPY_FILES += \
+      device/zte/arthur/wifi_modules/libra.ko:system/lib/modules/libra.ko \
+      device/zte/arthur/wifi_modules/libra_ftm.ko:system/lib/modules/libra_ftm.ko
+
