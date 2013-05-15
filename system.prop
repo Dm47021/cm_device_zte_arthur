@@ -10,8 +10,11 @@ wifi.supplicant_no_update_ctrl=true
 service.config.wifi=0
 
 dalvik.vm.dexopt-data-only=1
-com.qc.hardware=true
 
+com.qc.hardware=true
+debug.qctwa.statusbar=1
+debug.qctwa.preservebuf=1
+debug.qc.hardware=true
 
 # Ril
 ro.ril.disable.power.collapse=0
@@ -51,6 +54,7 @@ debug.composition.type=gpu
 debug.overlayui.enable=0
 dev.pm.dyn_samplingrate=1
 video.accelerate.hw=1
+
 debug.performance.tuning=1
 windowsmgr.max_events_per_sec=300
 ro.sf.lcd_density=240
