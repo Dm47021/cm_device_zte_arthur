@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define LOGE
-#define LOGE_IF
-#define LOGI
+
 #define LOG_NDEBUG 0
 #include <fcntl.h>
 #include <errno.h>
@@ -54,7 +52,7 @@ SensorBase::~SensorBase() {
 int SensorBase::open_device() {
     if (dev_fd<0 && dev_name) {
         dev_fd = open(dev_name, O_RDONLY);
-        LOGE_IF(dev_fd<0, "Couldn't open %s (%s)", dev_name, strerror(errno));
+        ALOGE_IF(dev_fd<0, "Couldn't open %s (%s)", dev_name, strerror(errno));
     }
     return 0;
 }
@@ -120,6 +118,6 @@ int SensorBase::openInput(const char* inputName) {
         }
     }
     closedir(dir);
-    LOGE_IF(fd<0, "couldn't find '%s' input device", inputName);
+    ALOGE_IF(fd<0, "couldn't find '%s' input device", inputName);
     return fd;
 }

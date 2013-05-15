@@ -8,7 +8,7 @@ ifneq ($(TARGET_SIMULATOR),true)
 # hw/<SENSORS_HARDWARE_MODULE_ID>.<ro.product.board>.so
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := sensors.msm7k
+LOCAL_MODULE := sensors.arthur
 
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 
@@ -26,6 +26,17 @@ LOCAL_SHARED_LIBRARIES := liblog libcutils
 LOCAL_PRELINK_MODULE := false
 
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_CFLAGS := -DLOG_TAG=\"ProxCal\"
+LOCAL_SRC_FILES:= proxcal/prox_cal.c
+
+LOCAL_MODULE:= prox_cal
+LOCAL_MODULE_TAGS := optional
+LOCAL_SHARED_LIBRARIES := liblog
+
+include $(BUILD_EXECUTABLE)
 
 endif # !TARGET_SIMULATOR
 
