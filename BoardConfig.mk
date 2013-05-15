@@ -181,10 +181,10 @@ ADDITIONAL_DEFAULT_PROPERTIES += persist.service.adb.enable=1
 
 # USB
 BOARD_VOLD_MAX_PARTITIONS := 24
-BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 BOARD_USE_USB_MASS_STORAGE_SWITCH := true
-TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/usb_mass_storage/lun%d/file"
-TARGET_USE_CUSTOM_SECOND_LUN_NUM := 1
+BOARD_CUSTOM_USB_CONTROLLER := ../../device/zte/arthur/UsbController.cpp
+BOARD_UMS_LUNFILE := /sys/devices/platform/msm_hsusb/gadget/lun0/file
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun0/file
 
 
 # TWRP RECOVERY
