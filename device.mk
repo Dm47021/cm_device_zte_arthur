@@ -366,6 +366,7 @@ PRODUCT_COPY_FILES += \
 
 # B08c etc
 PRODUCT_COPY_FILES += \
+        device/zte/arthur/prebuilt/b08c/etc/media_codecs.xml:system/etc/media_codecs.xml \
 	device/zte/arthur/prebuilt/b08c/etc/thermald.conf:system/etc/thermald.conf \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
