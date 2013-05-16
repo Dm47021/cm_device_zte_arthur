@@ -368,7 +368,7 @@ service cnd /system/bin/cnd
 
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class main
-    user bluetooth
+    user root
     group qcom_oncrpc bluetooth net_bt_admin
     disabled
     oneshot
@@ -418,6 +418,8 @@ service dhcp-service /system/bin/netcfg wlan0 dhcp
 on property:dev.bootcomplete=1
     stop dhcp-service
     start dhcp-service
+
+chmod 7777 /data/radio/*
 
 service qmuxd /system/bin/qmuxd
     class main

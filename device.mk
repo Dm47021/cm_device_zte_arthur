@@ -87,7 +87,7 @@ PRODUCT_PACKAGES += \
 
 # Sensors 
 PRODUCT_PACKAGES += \
-        sensors.msm7x30
+        sensors.arthur
 
 # WiFi
 PRODUCT_PACKAGES += \
