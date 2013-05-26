@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.widget.CheckBox;
 
 public class DeviceSettings extends PreferenceActivity {
+    
+    public CheckBox cb = (CheckBox) findViewById(android.R.id.cbacc);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -16,6 +19,27 @@ public class DeviceSettings extends PreferenceActivity {
 
         addPreferencesFromResource(R.xml.warpedparts);
         }
+    
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+        
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.hwacc:
+                if (checked)
+                    if(android.os.SystemProperties.get(debug.sf.hw) != 1){
+                        android.os.SystemProperties.set(debug.sf.hw, 1);
+                        checkboxChanged();
+                    }
+                else
+                    if(android.os.SystemProperties.get(debug.sf.hw) == 1){
+                        android.os.SystemProperties.set(debug.sf.hw, 0);
+                        checkboxChanged();
+                    }
+                break;
+        }
+    }
 
     @Override
     public void onPause() {
@@ -26,5 +50,9 @@ public class DeviceSettings extends PreferenceActivity {
             Utils.writeValue("/sys/module/msm_battery/parameters/usb_chg_enable", 1);
         else
             Utils.writeValue("/sys/module/msm_battery/parameters/usb_chg_enable", 0);
+    }
+    
+    public void checkboxChanged() {
+        //TODO implement later... reboot mechanism of sorts
     }
 }

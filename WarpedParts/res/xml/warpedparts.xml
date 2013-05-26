@@ -39,9 +39,11 @@
 
         <!-- Hardware Acceleration -->
         <CheckBoxPreference 
+            	android:id="@+id/hwacc"            	
                 android:key="config_hardwareAccelerated"
                 android:title="@string/hardware_acceleration_title_head"
                 android:summary="@string/hardware_acceleration_summary_head"
-                android:defaultValue="true" />
+                android:defaultValue="true"
+                android:onClick="onCheckboxClicked" />
 
 </PreferenceScreen>
