@@ -35,4 +35,13 @@
 		android:summary="@string/usb_charging_summary_head"
 		android:defaultValue="true" />
 
+        <!-- DM47021 MODS BEGIN HERE -->
+
+        <!-- Hardware Acceleration -->
+        <CheckBoxPreference 
+                android:key="config_hardwareAccelerated"
+                android:title="@string/hardware_acceleration_title_head"
+                android:summary="@string/hardware_acceleration_summary_head"
+                android:defaultValue="true" />
+
 </PreferenceScreen>

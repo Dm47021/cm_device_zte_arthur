@@ -15,4 +15,8 @@
 
         <string name="usb_charging_title_head">USB Charging</string>
         <string name="usb_charging_summary_head">Enable/Disable charging</string>
+ 
+        <!-- DM47021 MODS BEGIN HERE -->
+        <string name="hardware_acceleration_title_head">Hardware Acceleration</string>
+        <string name="hardware_acceleration_summary_head">Enable/Disable hardware acceleration [beta]</string>
 </resources>
