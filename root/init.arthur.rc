@@ -28,6 +28,12 @@ on init
     chmod 0622 /dev/log/system
 # ZTE_SYS_CHENXIHUA_001 end
 
+# DM052513JB SENSORS 
+    mkdir /dev/akm8973_aot 0666 system system
+
+# DM051213JB DUN
+    mkdir /dev/dun 0666 system system
+
 on emmc-fs
     wait /dev/block/mmcblk0p15
     mount ext4 /dev/block/mmcblk0p15 /system rw barrier=1
@@ -312,7 +318,7 @@ on property:init.svc.qcom-sh=stopped
 	
 	#ZTE_SENSORS_FYA_001 , begin, 20110315	
 	chmod 0777 /dev/akm8962_aot
-    chmod 0777 /dev/akm8962_dev
+        chmod 0777 /dev/akm8962_dev
 	chmod 0777 /dev/lis302dl
 	chmod 0777 /dev/adxl34x
 	#ZTE_SENSORS_FYA_001 , end  , 20110315

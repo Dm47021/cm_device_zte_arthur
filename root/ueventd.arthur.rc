@@ -27,6 +27,20 @@
 /dev/kgsl-2d0             0666   root       root
 /dev/kgsl-2d1             0666   root       root
 
+# Sensors -Jellybean
+/dev/akm8962_aot            0666   system   system
+/dev/akm8962_daemon         0666   system   system
+/dev/akm8962_dev            0666   system   system
+/dev/akm8973_aot            0666   system   system
+/dev/akm8973_daemon         0666   system   system
+/dev/akm8973_dev            0666   system   system 
+/dev/taos                   0666   system   system
+/dev/ISL                    0666   system   system
+/dev/lis302dl               0666   system   system
+/dev/adxl34x                0666   system   system
+/dev/si4708                 0666   system   system
+/dev/accelerometer          0666   system   system
+
 /dev/android_adb          0660   adb        adb
 /dev/android_adb_enable   0660   adb        adb
 
