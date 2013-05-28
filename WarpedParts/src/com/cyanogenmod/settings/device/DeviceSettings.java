@@ -78,16 +78,18 @@ public class DeviceSettings extends PreferenceActivity {
            public void onClick(DialogInterface dialog, int id) {
                if(android.os.SystemProperties.get(debug.sf.hw) == 0){
                         android.os.SystemProperties.set(debug.sf.hw, 1);
+                        cb.setChecked(true);
                     }
                 else
                     if(android.os.SystemProperties.get(debug.sf.hw) == 1){
                         android.os.SystemProperties.set(debug.sf.hw, 0);
+                        cb.setChecked(false);
                     }
            }
        });
         builder.setNeutralButton(c, new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int id) {
-               
+               dialog.dismiss();
            }
        });
 
