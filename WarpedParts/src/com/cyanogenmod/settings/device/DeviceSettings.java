@@ -35,7 +35,7 @@ public class DeviceSettings extends PreferenceActivity {
                 if (checked)
                     if(android.os.SystemProperties.get(debug.sf.hw) == 0){
                         android.os.SystemProperties.set(debug.sf.hw, 1);
-                        Util.checkboxChanged();
+                        Utils.checkboxChanged();
                     }
                 else
                     if(android.os.SystemProperties.get(debug.sf.hw) == 1){
