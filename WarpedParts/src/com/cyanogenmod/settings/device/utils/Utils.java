@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.PowerManager;
 import android.util.Log;
-import android.app.Activity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.SyncFailedException;
 
-public class Utils extends Activity
+public class Utils
 {
     private static final String TAG = "WarpedParts";
 
@@ -47,51 +46,4 @@ public class Utils extends Activity
         }
     }
     
-        public void checkboxChanged(String p) {
-        
-        if (p == hwacc) {
-        
-        String s = "CAUTION!!!";
-        String t = "Changing this option requires a full reboot. Reboot now?";
-        String y = "Reboot Now";
-        String n = "Not Now";
-        String c = "Cancel";
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-//
-        builder.setMessage(t)
-               .setTitle(s);
-               
-        builder.setPositiveButton(y, new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-               PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-               powerManager.reboot(null);
-           }
-       });
-        builder.setNegativeButton(c, new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-               if(android.os.SystemProperties.get(debug.sf.hw) == 0){
-                        android.os.SystemProperties.set(debug.sf.hw, 1);
-                        cb.setChecked(true);
-                    }
-                else
-                    if(android.os.SystemProperties.get(debug.sf.hw) == 1){
-                        android.os.SystemProperties.set(debug.sf.hw, 0);
-                        cb.setChecked(false);
-                    }
-           }
-       });
-        builder.setNeutralButton(c, new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-               dialog.dismiss();
-           }
-       });
-       
-        }
-
-
-        AlertDialog dialog = builder.create();
-    }
-}
 }
