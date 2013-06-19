@@ -1,6 +1,11 @@
 package com.cyanogenmod.settings.device;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.PowerManager;
 import android.util.Log;
+import android.app.Activity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,7 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.SyncFailedException;
 
-public class Utils
+public class Utils extends Activity
 {
     private static final String TAG = "WarpedParts";
 

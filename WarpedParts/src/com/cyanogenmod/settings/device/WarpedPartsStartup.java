@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+import com.cyanogenmod.settings.device.utils.Utils;
 
 
 public class WarpedPartsStartup extends BroadcastReceiver
