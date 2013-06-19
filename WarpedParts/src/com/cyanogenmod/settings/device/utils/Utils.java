@@ -1,9 +1,5 @@
-package com.cyanogenmod.settings.device;
+package com.cyanogenmod.settings.device.utils;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.PowerManager;
 import android.util.Log;
 
 import java.io.File;

@@ -7,18 +7,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 
 import com.cyanogenmod.settings.device.DeviceSettings;
 
 public class RebootDialog extends DialogFragment
 {
     private static final String TAG = "WarpedParts";
+    private CheckBox cb;
 
     Context mContext;
     
     public RebootDialog(Context mContext){
         this.mContext = mContext;
+        cb = findViewById(R.id.hwacc);
     }
     
     @Override
@@ -58,9 +61,7 @@ public class RebootDialog extends DialogFragment
                dialog.dismiss();
            }
        });
-       
-
-
+        
         return builder.create();
 }
 }
