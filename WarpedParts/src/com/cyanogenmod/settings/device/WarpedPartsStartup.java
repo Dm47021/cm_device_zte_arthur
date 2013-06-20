@@ -15,9 +15,18 @@ public class WarpedPartsStartup extends BroadcastReceiver
     public void onReceive(final Context context, final Intent bootintent) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         // USB charging
-        if(prefs.getBoolean("usb_charging", true))
+        if(prefs.getBoolean("usb_charging", true)) {
             Utils.writeValue("/sys/module/msm_battery/parameters/usb_chg_enable", 1);
-        else
+        }
+        else {
             Utils.writeValue("/sys/module/msm_battery/parameters/usb_chg_enable", 0);
+        }
+        //Hardware Acceleration
+        if(prefs.getBoolean("hwacc", true)) {
+            android.os.SystemProperties.set(debug.sf.hw, 1);
+        }
+        else {
+            android.os.SystemProperties.set(debug.sf.hw, 0);
+        }
     }
 }
