@@ -1,3 +1,4 @@
+
 package com.cyanogenmod.settings.device.utils;
 
 import android.app.AlertDialog;
@@ -18,44 +19,45 @@ public class RebootDialog extends DialogFragment
     private CheckBox cb;
 
     Context mContext;
-    
-    public RebootDialog(Context mContext){
+
+    public RebootDialog(Context mContext) {
         this.mContext = mContext;
         cb = (CheckBox) findViewById(R.id.hwacc);
     }
-    
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){        
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-    
+
         builder.setMessage(R.string.message)
-               .setTitle(R.string.title);
-               
+                .setTitle(R.string.title);
+
         builder.setPositiveButton(R.string.reboot, new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-               PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-               powerManager.reboot(null);
-           }
-       });
+            public void onClick(DialogInterface dialog, int id) {
+                PowerManager powerManager = (PowerManager) mContext
+                        .getSystemService(Context.POWER_SERVICE);
+                powerManager.reboot(null);
+            }
+        });
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-               if(android.os.SystemProperties.get(debug.sf.hw) == 0){
-                        android.os.SystemProperties.set(debug.sf.hw, 1);
-                        cb.setChecked(true);
-                    }
+            public void onClick(DialogInterface dialog, int id) {
+                if (android.os.SystemProperties.get(debug.sf.hw) == 0) {
+                    android.os.SystemProperties.set(debug.sf.hw, 1);
+                    cb.setChecked(true);
+                }
                 else
-                    if(android.os.SystemProperties.get(debug.sf.hw) == 1){
-                        android.os.SystemProperties.set(debug.sf.hw, 0);
-                        cb.setChecked(false);
-                    }
-           }
-       });
+                if (android.os.SystemProperties.get(debug.sf.hw) == 1) {
+                    android.os.SystemProperties.set(debug.sf.hw, 0);
+                    cb.setChecked(false);
+                }
+            }
+        });
         builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-           public void onClick(DialogInterface dialog, int id) {
-               dialog.dismiss();
-           }
-       });
-        
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
         return builder.create();
-}
+    }
 }
