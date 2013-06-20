@@ -21,29 +21,23 @@ public class RebootDialog extends DialogFragment
     
     public RebootDialog(Context mContext){
         this.mContext = mContext;
-        cb = findViewById(R.id.hwacc);
+        cb = (CheckBox) findViewById(R.id.hwacc);
     }
     
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
-        String s = "CAUTION!!!";
-        String t = "Changing this option requires a full reboot. Reboot now?";
-        String y = "Reboot Now";
-        String n = "Not Now";
-        String c = "Cancel";
-        
+    public Dialog onCreateDialog(Bundle savedInstanceState){        
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     
-        builder.setMessage(t)
-               .setTitle(s);
+        builder.setMessage(R.string.message)
+               .setTitle(R.string.title);
                
-        builder.setPositiveButton(y, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.reboot, new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int id) {
                PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
                powerManager.reboot(null);
            }
        });
-        builder.setNegativeButton(c, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int id) {
                if(android.os.SystemProperties.get(debug.sf.hw) == 0){
                         android.os.SystemProperties.set(debug.sf.hw, 1);
@@ -56,7 +50,7 @@ public class RebootDialog extends DialogFragment
                     }
            }
        });
-        builder.setNeutralButton(c, new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int id) {
                dialog.dismiss();
            }

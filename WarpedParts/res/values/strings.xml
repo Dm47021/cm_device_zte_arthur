@@ -12,6 +12,11 @@
         <string name="delete_success">Successfully restored default. Please reboot.</string>
         <string name="delete_error">Failed to restore defaults.</string>
         <string name="delete_no_file">Already using defaults.</string>
+        <string name="title">CAUTION!!!</string>
+        <string name="message">Changing this option requires a full reboot. Reboot now?</string>
+        <string name="reboot">Reboot Now</string>
+        <string name="no">Not Now</string>
+        <string name="cancel">Cancel</string>
 
         <string name="usb_charging_title_head">USB Charging</string>
         <string name="usb_charging_summary_head">Enable/Disable charging</string>
