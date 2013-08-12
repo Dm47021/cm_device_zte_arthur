@@ -17,7 +17,7 @@
  */
 -->
 <resources>
-    <bool name="def_screen_brightness_automatic_mode">true</bool>
+    <bool name="def_screen_brightness_automatic_mode">false</bool>
     <integer name="def_screen_off_timeout">30000</integer>
     <string name="def_backup_transport">com.google.android.backup/.BackupTransportService</string>
 </resources>

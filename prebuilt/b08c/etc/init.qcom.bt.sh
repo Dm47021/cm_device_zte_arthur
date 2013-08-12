@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
+# Copyright (c) 2009-2013, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -8,7 +8,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Code Aurora nor
+#     * Neither the name of The Linux Foundation nor
 #       the names of its contributors may be used to endorse or promote
 #       products derived from this software without specific prior written
 #       permission.
@@ -25,13 +25,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# /* < DTS2010073100955 xuhui 20100730 begin */ 
-# the sleep path is not used on 7230
-# /* < DTS2010101901100 xuhui 20101021 begin */ 
-# add clock control for qtr8200
-BLUETOOTH_CLOCK_PATH=/proc/bluetooth/clock/proto
-# /* DTS2010101901100 xuhui 20101021 end > */
-# /* DTS2010073100955 xuhui 20100730 end > */
+
+#Read the arguments passed to the script
+config="$1"
+
+BLUETOOTH_SLEEP_PATH=/proc/bluetooth/sleep/proto
 LOG_TAG="qcom-bluetooth"
 LOG_NAME="${0}:"
 
@@ -53,28 +51,54 @@ failed ()
   exit $2
 }
 
+program_bdaddr ()
+{
+  /system/bin/btnvtool -O
+  logi "Bluetooth Address programmed successfully"
+}
+
+config_bt ()
+{
+  setprop ro.qualcomm.bluetooth.opp true
+  setprop ro.qualcomm.bluetooth.hfp true
+  setprop ro.qualcomm.bluetooth.hsp true
+  setprop ro.qualcomm.bluetooth.pbap true
+  setprop ro.qualcomm.bluetooth.ftp true
+  setprop ro.qualcomm.bluetooth.map true
+  setprop ro.qualcomm.bluetooth.nap true
+  setprop ro.qualcomm.bluetooth.sap true
+  setprop ro.qualcomm.bluetooth.dun true
+
+  logi "Bluetooth stack is bluez"
+  setprop ro.qc.bluetooth.stack bluez
+}
+
 start_hciattach ()
 {
-# /* < DTS2010073100955 xuhui 20100730 begin */ 
-# sleep path mode is not used on 7230, if we ech 1 to a wrong path in /proc, the shell will be not sensitive to the signal send by init 
-#  echo 1 > $BLUETOOTH_SLEEP_PATH
-# /* DTS2010073100955 xuhui 20100730 end > */
   /system/bin/hciattach -n $BTS_DEVICE $BTS_TYPE $BTS_BAUD &
   hciattach_pid=$!
   logi "start_hciattach: pid = $hciattach_pid"
+  echo 1 > $BLUETOOTH_SLEEP_PATH
 }
 
 kill_hciattach ()
 {
+  echo 0 > $BLUETOOTH_SLEEP_PATH
   logi "kill_hciattach: pid = $hciattach_pid"
   ## careful not to kill zero or null!
   kill -TERM $hciattach_pid
-# /* < DTS2010073100955 xuhui 20100730 begin */ 
-# sleep path mode is not used on 7230, if we ech 1 to a wrong path in /proc, the shell will be not sensitive to the signal send by init 
-#  echo 0 > $BLUETOOTH_SLEEP_PATH
-# /* DTS2010073100955 xuhui 20100730 end > */
   # this shell doesn't exit now -- wait returns for normal exit
 }
+
+logi "init.qcom.bt.sh config = $config"
+case "$config" in
+    "onboot")
+        config_bt
+        exit 0
+        ;;
+    *)
+        ;;
+esac
 
 # mimic hciattach options parsing -- maybe a waste of effort
 USAGE="hciattach [-n] [-p] [-b] [-t timeout] [-s initial_speed] <tty> <type | id> [speed] [flow|noflow] [bdaddr]"
@@ -93,24 +117,87 @@ shift $(($OPTIND-1))
 # Note that "hci_qcomm_init -e" prints expressions to set the shell variables
 # BTS_DEVICE, BTS_TYPE, BTS_BAUD, and BTS_ADDRESS.
 
-eval $(/system/bin/hci_qcomm_init -2 -e && echo "exit_code_hci_qcomm_init=0" || echo "exit_code_hci_qcomm_init=1")
+#Selectively Disable sleep
+BOARD=`getprop ro.board.platform`
+STACK=`getprop ro.qc.bluetooth.stack`
 
-# /* < DTS2010101901100 xuhui 20101021 begin */ 
-case $exit_code_hci_qcomm_init in
-  0) logi "Bluetooth QSoC firmware download succeeded, $BTS_DEVICE $BTS_TYPE $BTS_BAUD $BTS_ADDRESS"
-     echo 1 > $BLUETOOTH_CLOCK_PATH 
-  ;;
-  *) failed "Bluetooth QSoC firmware download failed" $exit_code_hci_qcomm_init;;
+POWER_CLASS=`getprop qcom.bt.dev_power_class`
+
+#find the transport type
+TRANSPORT=`getprop ro.qualcomm.bt.hci_transport`
+logi "Transport : $TRANSPORT"
+case $STACK in
+    "bluez")
+       logi "** Bluez stack **"
+    ;;
+    *)
+       logi "** Bluedroid stack **"
+       setprop bluetooth.status off
+    ;;
 esac
 
-# /* DTS2010101901100 xuhui 20101021 end > */
+case $POWER_CLASS in
+  1) PWR_CLASS="-p 0" ;
+     logi "Power Class: 1";;
+  2) PWR_CLASS="-p 1" ;
+     logi "Power Class: 2";;
+  3) PWR_CLASS="-p 2" ;
+     logi "Power Class: CUSTOM";;
+  *) PWR_CLASS="";
+     logi "Power Class: Ignored. Default(1) used (1-CLASS1/2-CLASS2/3-CUSTOM)";
+     logi "Power Class: To override, Before turning BT ON; setprop qcom.bt.dev_power_class <1 or 2 or 3>";;
+esac
+
+eval $(/system/bin/hci_qcomm_init -e $PWR_CLASS && echo "exit_code_hci_qcomm_init=0" || echo "exit_code_hci_qcomm_init=1")
+
+case $exit_code_hci_qcomm_init in
+  0) logi "Bluetooth QSoC firmware download succeeded, $BTS_DEVICE $BTS_TYPE $BTS_BAUD $BTS_ADDRESS";;
+  *) failed "Bluetooth QSoC firmware download failed" $exit_code_hci_qcomm_init;
+     case $STACK in
+         "bluez")
+            logi "** Bluez stack **"
+         ;;
+         *)
+            logi "** Bluedroid stack **"
+            setprop bluetooth.status off
+        ;;
+     esac
+
+     exit $exit_code_hci_qcomm_init;;
+esac
+
 # init does SIGTERM on ctl.stop for service
 trap "kill_hciattach" TERM INT
 
-start_hciattach
+case $TRANSPORT in
+    "smd")
+       case $STACK in
+           "bluez")
+              logi "** Bluez stack **"
+              echo 1 > /sys/module/hci_smd/parameters/hcismd_set
+           ;;
+           *)
+              logi "** Bluedroid stack **"
+              setprop bluetooth.status on
+           ;;
+       esac
+     ;;
+     *)
+        logi "start hciattach"
+        start_hciattach
+        case $STACK in
+            "bluez")
+               logi "Bluetooth is turning On with Bluez stack "
+            ;;
+            *)
+               logi "** Bluedroid stack **"
+               setprop bluetooth.status on
+            ;;
+        esac
 
-wait $hciattach_pid
-
-logi "Bluetooth stopped"
+        wait $hciattach_pid
+        logi "Bluetooth stopped"
+     ;;
+esac
 
 exit 0
