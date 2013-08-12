@@ -24,6 +24,8 @@
 # variant, so that it gets overwritten by the parent (which goes
 # against the traditional rules of inheritance).
 
+# NOTE: All Modifications Should Be Outlined As WHO,DATE,VER,WHAT START / END e.g DM061513JB Wifi ---- Start 
+
 LOCAL_PATH := $(call my-dir)
 
 TARGET_SPECIFIC_HEADER_PATH := device/zte/arthur/include
@@ -34,6 +36,7 @@ BOARD_VENDOR := ZTE
 USE_CAMERA_STUB := false
 TARGET_DISABLE_ARM_PIE := true
 COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT
+BUILD_LIBCAMERA := true
 
 #Board Settings
 TARGET_BOARD_PLATFORM := msm7x30
@@ -50,7 +53,7 @@ TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 TARGET_BOARD_PLATFORM_FPU := neon
 BOARD_USES_ADRENO_200 := true
 
-TARGET_PROVIDES_INIT_RC := false
+TARGET_PROVIDES_INIT_RC := true
 TARGET_PROVIDES_RECOVERY_INIT_RC := true
 TARGET_RECOVERY_INITRC := device/zte/arthur/recovery/root/init.rc
 ARCH_ARM_HAVE_ARMV7A := true
@@ -70,13 +73,19 @@ JS_ENGINE := v8
 # Audio
 TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USES_GENERIC_AUDIO := false
+BOARD_USES_QCOM_AUDIO_V2 := true  
 BOARD_USES_QCOM_AUDIO_RESETALL := true
 BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := false
+BOARD_HAVE_BLUETOOTH_BLUEZ := true
+BOARD_HAVE_BLUETOOTH_BCM := true 
+
+# FM Radio
+BOARD_HAVE_QCOM_FM := true
+COMMON_GLOBAL_CFLAGS += -DQCOM_FM_ENABLED
 
 #Graphics
 BOARD_EGL_CFG := device/zte/arthur/prebuilt/files/lib/egl/egl.cfg
@@ -98,7 +107,7 @@ TARGET_USES_ION := false
 TARGET_USES_HWCOMPOSER := true
 BOARD_USES_GENLOCK := true
 TARGET_LIBAGL_USE_GRALLOC_COPYBITS := true
-COMMON_GLOBAL_CFLAGS += -DFORCE_CPU_UPLOAD -DQCOM_NO_SECURE_PLAYBACK -DUSES_LEGACY_EGL
+COMMON_GLOBAL_CFLAGS += -DFORCE_CPU_UPLOAD -DQCOM_NO_SECURE_PLAYBACK -DUSES_LEGACY_EGL 
 COMMON_GLOBAL_CFLAGS += -DQCOM_ACDB_ENABLED -DLEGACY_QCOM_VOICE -DPOLL_CALL_STATE -DUSE_QMI
 BOARD_ADRENO_DECIDE_TEXTURE_TARGET := true
 BOARD_USE_SKIA_LCDTEXT := true
@@ -116,7 +125,7 @@ BOARD_USES_QCOM_GPS := true
 BOARD_USES_QCOM_LIBS := true
 BOARD_NEEDS_MEMORYHEAPPMEM := true
 BOARD_USES_QCOM_LIBRPC := true
-COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DQCOM_ICS_COMPAT -DICS_CAMERA_BLOB
+COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DQCOM_ICS_COMPAT -DICS_CAMERA_BLOB -DQCOM_ROTATOR_KERNEL_FORMATS # <<DM061513JB Rotator
 BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := default
 
@@ -131,14 +140,15 @@ COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DREFRESH_RATE=60 -DQCOM_LEGACY_OMX
 
 # Wifi
 # Defines for external/wpa_supplicant_*
-WPA_SUPPLICANT_VERSION       := VER_0_8_X
+BOARD_WLAN_DEVICE := qcwcn
+BOARD_HAS_QCOM_WLAN := true
+WPA_SUPPLICANT_VERSION       := VER_0_6_X
 BOARD_WPA_SUPPLICANT_DRIVER  := WEXT
-BOARD_WLAN_DEVICE            := qcwcn
+BOARD_WLAN_DEVICE            := libra
 
 # Defines for hardware/libhardware_legacy/wifi
 WIFI_DRIVER_MODULE_PATH      := "/system/lib/modules/libra.ko"
 WIFI_DRIVER_MODULE_NAME      := "libra"
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wext
 WIFI_EXT_MODULE_PATH         := "/system/lib/modules/librasdioif.ko"
 WIFI_EXT_MODULE_NAME         := "librasdioif"
 BOARD_WEXT_NO_COMBO_SCAN := true
@@ -149,10 +159,10 @@ WPA_BUILD_SUPPLICANT := true
 TARGET_BOOTANIMATION_PRELOAD := true
 
 # Inline Kernel Build
-TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
+#TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 TARGET_KERNEL_CONFIG := arthur_dm_defconfig
 # Kernel
-TARGET_PREBUILT_KERNEL := device/zte/arthur/kernel
+TARGET_PREBUILT_KERNEL := device/zte/arthur/zImage
 TARGET_PREBUILT_RECOVERY_KERNEL := device/zte/arthur/recovery/recovery_kernel
 BOARD_KERNEL_CMDLINE := console=ttyMSM1,115200 androidboot.hardware=arthur
 BOARD_KERNEL_BASE := 0x00200000
@@ -186,14 +196,18 @@ BOARD_CUSTOM_USB_CONTROLLER := ../../device/zte/arthur/UsbController.cpp
 BOARD_UMS_LUNFILE := /sys/devices/platform/msm_hsusb/gadget/lun0/file
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun0/file
 
-
 # TWRP RECOVERY
 TARGET_RECOVERY_GUI := true
 DEVICE_RESOLUTION := 480x800
-TARGET_RECOVERY_PIXEL_FORMAT := "RGB_565"
+#TARGET_RECOVERY_PIXEL_FORMAT := "RGB_565"
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 BOARD_HAS_FLIPPED_SCREEN := true
 
 TARGET_OTA_ASSERT_DEVICE := arthur,warp
+TARGET_RECOVERY_INITRC := device/zte/arthur/recovery/root/init.rc
+BOARD_CUSTOM_GRAPHICS := ../../../device/zte/arthur/recovery/graphics.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/zte/arthur/recovery/recovery_ui.c
+TARGET_RECOVERY_PRE_COMMAND := "echo 3 > /proc/sys/vm/drop_caches; sync"
 
 # Releasetools
 TARGET_PROVIDES_RELEASETOOLS := true

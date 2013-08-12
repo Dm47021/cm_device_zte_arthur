@@ -24,7 +24,11 @@ PRODUCT_PROPERTY_OVERRIDES+= dalvik.vm.execution-mode=int:jit \
 	debug.enabletr=true \
 	persist.sys.use_dithering=0 \
 	ro.com.google.locationfeatures=1 \
-	mobiledata.interfaces = wlan0,rmnet0
+	mobiledata.interfaces = wlan0,rmnet0,bnep
+
+# Audio
+PRODUCT_PROPERTY_OVERRIDES += \
+  lpa.decode=true
 
 # Provides overrides to configure the Dalvik heap for a standard tablet device.
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -60,16 +64,21 @@ PRODUCT_PACKAGES += \
 
 # Audio
 PRODUCT_PACKAGES += \
-        audio.a2dp.msm7x30 \
+        audio.a2dp.default \
         audio_policy.msm7x30 \
         audio.primary.msm7x30 \
+        audio_policy.conf \
         libaudioutils
+
 
 ## Bluetooth
 PRODUCT_PACKAGES += \
-	hciattach \
-	hciconfig \
-	hcitool 
+    hciattach \
+    hciconfig \
+    hcitool \
+    libbluetooth \
+    libbluetoothd \
+    javax.btobex
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -88,14 +97,14 @@ PRODUCT_PACKAGES += \
 # Sensors 
 PRODUCT_PACKAGES += \
         sensors.arthur
-
+ 
 # WiFi
 PRODUCT_PACKAGES += \
     libwpa_client 
  
 # WarpedParts App
 PRODUCT_PACKAGES += \
-        WarpedParts 
+        V9Parts
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
@@ -141,6 +150,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_COPY_FILES += \
     device/zte/arthur/root/default.prop:/root/default.prop \
     device/zte/arthur/root/init:/root/init \
+    device/zte/arthur/root/init.rc:/root/init.rc \
     device/zte/arthur/root/init.arthur.rc:/root/init.arthur.rc \
     device/zte/arthur/root/initlogo.rle:/root/initlogo.rle \
     device/zte/arthur/root/init.qcom.sh:/root/init.qcom.sh \
@@ -338,6 +348,7 @@ PRODUCT_COPY_FILES += \
 
 # B08c bin
 PRODUCT_COPY_FILES += \
+        device/zte/arthur/prebuilt/b08c/bin/akmd2:system/bin/akmd2 \
         device/zte/arthur/prebuilt/b08c/bin/akmd8962:system/bin/akmd8962 \
 	device/zte/arthur/prebuilt/b08c/bin/at-daemon:system/bin/at-daemon \
 	device/zte/arthur/prebuilt/b08c/bin/battery_charging:system/bin/battery_charging \
@@ -352,6 +363,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/bin/hci_qcomm_init:system/bin/hci_qcomm_init \
 	device/zte/arthur/prebuilt/b08c/bin/hlr_auc_gw:system/bin/hlr_auc_gw \
 	device/zte/arthur/prebuilt/b08c/bin/init.btprop.sh:system/bin/init.btprop.sh \
+        device/zte/arthur/prebuilt/b08c/bin/iprenew:system/bin/iprenew \
 	device/zte/arthur/prebuilt/b08c/bin/loc_api_app:system/bin/loc_api_app \
 	device/zte/arthur/prebuilt/b08c/bin/port-bridge:system/bin/port-bridge \
 	device/zte/arthur/prebuilt/b08c/bin/proximity.init:system/bin/proximity.init \
@@ -373,7 +385,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.fm.sh:system/etc/init.qcom.fm.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.sdio.sh:system/etc/init.qcom.sdio.sh \
-        device/zte/arthur/prebuilt/b08c/etc/init.qcom.wifi.sh:system/etc/init.qcom.wifi.sh \
+        device/zte/arthur/prebuilt/files/etc/init.d/01cm.init.libra.wifi:system/etc/init.d/01cminit.libra.wifi.sh \
 	device/zte/arthur/prebuilt/b08c/etc/vold.fstab:system/etc/vold.fstab \
         device/zte/arthur/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
 
@@ -393,6 +405,22 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxWmaDec.so:system/lib/libOmxWmaDec.so \
         device/zte/arthur/prebuilt/files/lib/hw/lights.msm7x30.so:system/lib/hw/lights.msm7x30.so \
 
+# B08c framework Shit
+PRODUCT_COPY_FILES += \
+        device/zte/arthur/prebuilt/b08c/framework/qcnvitems.jar:system/framework/qcnvitems.jar \
+        device/zte/arthur/prebuilt/b08c/framework/qcrilhook.jar:system/framework/qcrilhook.jar \
+        device/zte/arthur/prebuilt/b08c/framework/sprint.jar:system/framework/sprint.jar \
+        device/zte/arthur/permissions/qcnvitems.xml:system/etc/permissions/qcnvitems.xml \
+        device/zte/arthur/permissions/qcrilhook.xml:system/etc/permissions/qcrilhook.xml
+
+# Bluez
+PRODUCT_COPY_FILES += \
+    system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
+    system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
+    system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
+    system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
+    system/bluetooth/data/main.le.conf:system/etc/bluetooth/main.conf \
+    system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
 
 ## PREBUILT WiFi Modules
 
