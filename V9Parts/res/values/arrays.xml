@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <string-array name="gesture_pressure_array">
+      <item>Lowest</item>
+      <item>Low</item>
+      <item>Normal</item>
+      <item>High</item>
+      <item>Highest</item>
+      <item>Disabled</item>
+   </string-array>
+   <string-array name="gesture_pressure_values">
+      <item>1000</item>
+      <item>1100</item>
+      <item>1200</item>
+      <item>1300</item>
+      <item>1400</item>
+      <item>20000</item>
+   </string-array>
+
+   <string-array name="gesture_blindspot_array">
+      <item>Smallest</item>
+      <item>Small</item>
+      <item>Normal</item>
+      <item>Large</item>
+      <item>Largest</item>
+      <item>Disabled</item>
+   </string-array>
+   <string-array name="gesture_blindspot_values">
+      <item>25</item>
+      <item>50</item>
+      <item>100</item>
+      <item>150</item>
+      <item>200</item>
+      <item>0</item>
+   </string-array>
+</resources>
