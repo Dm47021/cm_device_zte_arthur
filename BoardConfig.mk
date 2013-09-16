@@ -47,6 +47,7 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 ARCH_ARM_HAVE_NEON := true
 ARCH_ARM_HAVE_VFP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
+ARCH_ARM_HAVE_ARMV7A_BUG := true
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp -march=armv7-a
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp -march=armv7-a
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
