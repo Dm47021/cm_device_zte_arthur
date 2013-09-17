@@ -234,6 +234,10 @@ mkdir /data/misc/dhcp 0770 dhcp dhcp
 # Include extra init file
     import /init.cm.rc
 
+# change for hwasettings
+ mkdir 0775 /data/local/hwui.deny
+ chown system user /data/local/hwui.deny
+
 on boot
 # basic network init
     ifup lo
