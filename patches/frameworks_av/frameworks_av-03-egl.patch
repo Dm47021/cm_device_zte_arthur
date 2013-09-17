@@ -1,0 +1,65 @@
+From c4d6dac56a4a33246bfa149d60c52910cdce96b9 Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Thu, 19 Jul 2012 09:40:17 -0300
+Subject: [PATCH] Add MISSING_EGL_EXTERNAL_IMAGE ifdef to NativeWindowRenderer
+
+Change-Id: I0e9cf6ac1c6da17326525ee1be26a3b3ea9c29e7
+---
+ libvideoeditor/lvpp/NativeWindowRenderer.cpp |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+
+diff --git a/libvideoeditor/lvpp/NativeWindowRenderer.cpp b/libvideoeditor/lvpp/NativeWindowRenderer.cpp
+index b2c2675..142adbf 100755
+--- a/libvideoeditor/lvpp/NativeWindowRenderer.cpp
++++ b/libvideoeditor/lvpp/NativeWindowRenderer.cpp
+@@ -72,7 +72,11 @@ static const char vSrcNormal[] =
+ static const char fSrcNormal[] =
+     "#extension GL_OES_EGL_image_external : require\n"
+     "precision mediump float;\n"
++#ifdef MISSING_EGL_EXTERNAL_IMAGE
++    "uniform sampler2D texSampler;\n"
++#else
+     "uniform samplerExternalOES texSampler;\n"
++#endif
+     "varying vec2 texCoords;\n"
+     "void main() {\n"
+     "  gl_FragColor = texture2D(texSampler, texCoords);\n"
+@@ -81,7 +85,11 @@ static const char fSrcNormal[] =
+ static const char fSrcSepia[] =
+     "#extension GL_OES_EGL_image_external : require\n"
+     "precision mediump float;\n"
++#ifdef MISSING_EGL_EXTERNAL_IMAGE
++    "uniform sampler2D texSampler;\n"
++#else
+     "uniform samplerExternalOES texSampler;\n"
++#endif
+     "varying vec2 texCoords;\n"
+     RGB2YUV_MATRIX
+     YUV2RGB_MATRIX
+@@ -95,7 +103,11 @@ static const char fSrcSepia[] =
+ static const char fSrcNegative[] =
+     "#extension GL_OES_EGL_image_external : require\n"
+     "precision mediump float;\n"
++#ifdef MISSING_EGL_EXTERNAL_IMAGE
++    "uniform sampler2D texSampler;\n"
++#else
+     "uniform samplerExternalOES texSampler;\n"
++#endif
+     "varying vec2 texCoords;\n"
+     RGB2YUV_MATRIX
+     YUV2RGB_MATRIX
+@@ -109,7 +121,11 @@ static const char fSrcNegative[] =
+ static const char fSrcGradient[] =
+     "#extension GL_OES_EGL_image_external : require\n"
+     "precision mediump float;\n"
++#ifdef MISSING_EGL_EXTERNAL_IMAGE
++    "uniform sampler2D texSampler;\n"
++#else
+     "uniform samplerExternalOES texSampler;\n"
++#endif
+     "varying vec2 texCoords;\n"
+     "varying float topDown;\n"
+     RGB2YUV_MATRIX
+-- 
+1.7.9.1
+

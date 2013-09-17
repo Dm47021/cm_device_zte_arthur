@@ -1,0 +1,32 @@
+From a39ff280468091ba099d861b636863eacae04dc9 Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Thu, 19 Jul 2012 07:50:39 -0300
+Subject: [PATCH] Ignore some errors checks, they always occurs because broken
+ GL drivers
+
+Change-Id: Iecdd8bd20aefa491cc042c406c64e21632d7b993
+---
+ .../graphics/android/rendering/GLUtils.cpp         |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/Source/WebCore/platform/graphics/android/rendering/GLUtils.cpp b/Source/WebCore/platform/graphics/android/rendering/GLUtils.cpp
+index bfa0789..90b3d37 100644
+--- a/Source/WebCore/platform/graphics/android/rendering/GLUtils.cpp
++++ b/Source/WebCore/platform/graphics/android/rendering/GLUtils.cpp
+@@ -173,6 +173,13 @@ void GLUtils::checkEglError(const char* op, EGLBoolean returnVal)
+ bool GLUtils::checkGlError(const char* op)
+ {
+     bool ret = false;
++    if(strcmp(op,"deleteUnusedTextures")==0 ||
++        strcmp(op,"cleanupGLResources()")==0 ||
++        strcmp(op,"TilesManager::cleanupGLResources")==0 ||
++        strcmp(op,"TilesManager::getMaxTextureAllocation")==0 ||
++        strcmp(op,"At the end of blitTileFromQueue()")==0) {
++        return ret;
++    }
+     for (GLint error = glGetError(); error; error = glGetError()) {
+ #ifndef DEBUG
+         if (allowGLLog())
+-- 
+1.7.9.1
+

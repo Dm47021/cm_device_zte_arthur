@@ -1,0 +1,71 @@
+From 914698f8c56bf95fe61baedb8a495b53729a84aa Mon Sep 17 00:00:00 2001
+From: Conn O'Griofa <connogriofa@gmail.com>
+Date: Fri, 4 Jan 2013 19:43:50 -0200
+Subject: [PATCH 06/14] Allow purging of asset bitmaps
+
+It seems that neither CM9 nor CM10.x includes the actual framework-side
+code to facilitate user-controllable bitmap purging. Odd, since the
+CyanogenMod Settings app in both CM9/CM10.x includes the option.
+
+Backported from original Gingerbread commit:
+http://review.cyanogenmod.org/#/c/3908
+
+Original description:
+
+Allow the system to reclaim more free RAM when needed on 'low' memory devices
+(e.g. Droid/Milestone) that are struggling with 2.3. This option enabled
+efectively restores the froyo way of forcePurgeable BitmapFactory asset
+handling.
+
+Change-Id: I6a3b8a05b7be9c214a8548d6c6d1621e6533a1e0
+---
+ core/jni/android/graphics/BitmapFactory.cpp | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/core/jni/android/graphics/BitmapFactory.cpp b/core/jni/android/graphics/BitmapFactory.cpp
+index 69ef080..4a67dd6 100644
+--- a/core/jni/android/graphics/BitmapFactory.cpp
++++ b/core/jni/android/graphics/BitmapFactory.cpp
+@@ -15,6 +15,7 @@
+ #include "JNIHelp.h"
+ 
+ #include <android_runtime/AndroidRuntime.h>
++#include <cutils/properties.h>
+ #include <androidfw/Asset.h>
+ #include <androidfw/ResourceTypes.h>
+ #include <netinet/in.h>
+@@ -45,6 +46,8 @@ jfieldID gBitmap_layoutBoundsFieldID;
+ 
+ using namespace android;
+ 
++bool mPurgeableAssets;
++
+ static inline int32_t validOrNeg1(bool isValid, int32_t value) {
+ //    return isValid ? value : -1;
+     SkASSERT((int)isValid == 0 || (int)isValid == 1);
+@@ -489,8 +492,8 @@ static jobject nativeDecodeAssetScaled(JNIEnv* env, jobject clazz, jint native_a
+ 
+     SkStream* stream;
+     Asset* asset = reinterpret_cast<Asset*>(native_asset);
+-    bool forcePurgeable = optionsPurgeable(env, options);
+-    if (forcePurgeable) {
++    bool forcePurgeable = mPurgeableAssets;
++    if (forcePurgeable || optionsPurgeable(env, options)) {
+         // if we could "ref/reopen" the asset, we may not need to copy it here
+         // and we could assume optionsShareable, since assets are always RO
+         stream = copyAssetToStream(asset);
+@@ -614,6 +617,11 @@ int register_android_graphics_BitmapFactory(JNIEnv* env) {
+     SkASSERT(bitmap_class);
+     gBitmap_nativeBitmapFieldID = getFieldIDCheck(env, bitmap_class, "mNativeBitmap", "I");
+     gBitmap_layoutBoundsFieldID = getFieldIDCheck(env, bitmap_class, "mLayoutBounds", "[I");
++
++    char value[PROPERTY_VALUE_MAX];
++    property_get("persist.sys.purgeable_assets", value, "0");
++    mPurgeableAssets = atoi(value) == 1;
++
+     int ret = AndroidRuntime::registerNativeMethods(env,
+                                     "android/graphics/BitmapFactory$Options",
+                                     gOptionsMethods,
+-- 
+1.8.1.1
+

@@ -1,0 +1,57 @@
+From 9e63c3b8620f32f22a25902fcb6d7ff3ab1c940b Mon Sep 17 00:00:00 2001
+From: Grigori Goronzy <greg@blackbox>
+Date: Wed, 30 Jan 2013 03:03:26 +0100
+Subject: [PATCH] Fix icon label shadow/outline rendering
+
+Trebuchet's icon rendering uses a weird hack to improve contrast
+between shadow and text, to create a faux outline of some sort. It
+just draws the text twice.
+
+This exposes a bug in either the hwui renderer or the Adreno 200
+drivers, resulting in corrupted rendering sometimes. It does not
+look all that good anyway even if rendering is correct, because the
+hack messes up the text's antialiasing, so remove it, and adjust the
+shadow color and position to make it look a bit more like the hack.
+
+Change-Id: Id8f43f2f287845df38a48e73381f7463d10f7f8d
+---
+ src/com/cyanogenmod/trebuchet/BubbleTextView.java | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/src/com/cyanogenmod/trebuchet/BubbleTextView.java b/src/com/cyanogenmod/trebuchet/BubbleTextView.java
+index 405deab..b3f1494 100644
+--- a/src/com/cyanogenmod/trebuchet/BubbleTextView.java
++++ b/src/com/cyanogenmod/trebuchet/BubbleTextView.java
+@@ -36,10 +36,8 @@ import android.widget.TextView;
+ public class BubbleTextView extends TextView {
+     static final float CORNER_RADIUS = 4.0f;
+     static final float SHADOW_LARGE_RADIUS = 4.0f;
+-    static final float SHADOW_SMALL_RADIUS = 1.75f;
+-    static final float SHADOW_Y_OFFSET = 2.0f;
+-    static final int SHADOW_LARGE_COLOUR = 0xDD000000;
+-    static final int SHADOW_SMALL_COLOUR = 0xCC000000;
++    static final float SHADOW_Y_OFFSET = 1.0f;
++    static final int SHADOW_LARGE_COLOUR = 0xFF000000;
+     static final float PADDING_H = 8.0f;
+     static final float PADDING_V = 3.0f;
+ 
+@@ -295,16 +293,8 @@ public class BubbleTextView extends TextView {
+             return;
+         }
+ 
+-        // We enhance the shadow by drawing the shadow twice
+         getPaint().setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+         super.draw(canvas);
+-        canvas.save(Canvas.CLIP_SAVE_FLAG);
+-        canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
+-                getScrollX() + getWidth(),
+-                getScrollY() + getHeight(), Region.Op.INTERSECT);
+-        getPaint().setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
+-        super.draw(canvas);
+-        canvas.restore();
+     }
+ 
+     @Override
+-- 
+1.8.0.3
+

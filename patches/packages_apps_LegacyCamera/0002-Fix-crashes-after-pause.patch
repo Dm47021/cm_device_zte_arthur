@@ -1,0 +1,45 @@
+From ea622ba34f9529835dbd4c02554240e9592439db Mon Sep 17 00:00:00 2001
+From: Grigori Goronzy <greg@blackbox>
+Date: Mon, 18 Mar 2013 12:51:51 +0100
+Subject: [PATCH 2/2] Fix crashes after pause
+
+The camera was incorrectly using MediaActionSound. The documentation
+says:
+> Do not call any other methods on a MediaActionSound instance after
+> calling release().
+But that was precisely what the camera was doing. Boom, null pointer
+exception.
+
+Change-Id: Iebc5b0a7b8b6d66d8a39a714a57c3c1d0aafc2d8
+---
+ src/com/android/camera/Camera.java | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/camera/Camera.java b/src/com/android/camera/Camera.java
+index 2ca7944..9d86446 100644
+--- a/src/com/android/camera/Camera.java
++++ b/src/com/android/camera/Camera.java
+@@ -1536,6 +1536,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
+         mJpegPictureCallbackTime = 0;
+         mZoomValue = 0;
+ 
++        mCameraSound = new MediaActionSound();
++
+         // Start the preview if it is not started.
+         if (mCameraState == PREVIEW_STOPPED) {
+             try {
+@@ -1578,7 +1580,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
+         stopPreview();
+         // Close the camera now because other activities may need to use it.
+         closeCamera();
+-        if (mCameraSound != null) mCameraSound.release();
++        if (mCameraSound != null) {
++            mCameraSound.release();
++            mCameraSound = null;
++        }
+         resetScreenOn();
+ 
+         // Clear UI.
+-- 
+1.8.2
+

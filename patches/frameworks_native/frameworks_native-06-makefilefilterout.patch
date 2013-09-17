@@ -1,0 +1,30 @@
+From 2a6609e65ec67400949b9611d08fa19aacf93d9b Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Sun, 22 Jul 2012 00:01:29 -0300
+Subject: [PATCH 6/6] Remove buggy makefile block
+
+Not used by olympus
+
+Change-Id: I30ee2e9719dbdd2053154d6a2108b28ea2bef1f7
+---
+ services/surfaceflinger/Android.mk |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
+
+diff --git a/services/surfaceflinger/Android.mk b/services/surfaceflinger/Android.mk
+index d041962..b7c8be4 100644
+--- a/services/surfaceflinger/Android.mk
++++ b/services/surfaceflinger/Android.mk
+@@ -57,10 +57,6 @@ ifeq ($(TARGET_SOC),exynos5250)
+ LOCAL_CFLAGS += -DSAMSUNG_EXYNOS5250
+ endif
+ 
+-ifeq ($(filter-out s5pc110 s5pv210,$(TARGET_SOC)),)
+-LOCAL_CFLAGS += -DHAS_CONTEXT_PRIORITY -DNEVER_DEFAULT_TO_ASYNC_MODE -DHWC_LAYER_DIRTY_INFO
+-endif
+-
+ ifeq ($(BOARD_USES_SAMSUNG_HDMI),true)
+ LOCAL_CFLAGS += -DBOARD_USES_SAMSUNG_HDMI
+ LOCAL_SHARED_LIBRARIES += libTVOut libhdmiclient
+-- 
+1.7.9.1
+

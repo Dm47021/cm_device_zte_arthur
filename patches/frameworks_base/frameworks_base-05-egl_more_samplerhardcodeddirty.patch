@@ -1,0 +1,35 @@
+From 310c2243b6c1666e992a5f71b78f67ae218e1d22 Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Wed, 25 Jul 2012 20:01:36 -0300
+Subject: [PATCH] More dirty hardcoded MISSING_EGL_EXTERNAL_IMAGE
+
+Change-Id: I09580d7a57c64083498ef4950bc6fab426fad224
+---
+ opengl/java/android/opengl/GLES11Ext.java |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/opengl/java/android/opengl/GLES11Ext.java b/opengl/java/android/opengl/GLES11Ext.java
+index 484439a..c0a815c 100644
+--- a/opengl/java/android/opengl/GLES11Ext.java
++++ b/opengl/java/android/opengl/GLES11Ext.java
+@@ -22,6 +22,8 @@ package android.opengl;
+ import java.nio.Buffer;
+ 
+ public class GLES11Ext {
++    public static final boolean MISSING_EGL_EXTERNAL_IMAGE=true;
++
+     public static final int GL_BLEND_EQUATION_RGB_OES                               = 0x8009;
+     public static final int GL_BLEND_EQUATION_ALPHA_OES                             = 0x883D;
+     public static final int GL_BLEND_DST_RGB_OES                                    = 0x80C8;
+@@ -125,7 +127,7 @@ public class GLES11Ext {
+     public static final int GL_TEXTURE_MAX_ANISOTROPY_EXT                           = 0x84FE;
+     public static final int GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT                       = 0x84FF;
+     public static final int GL_BGRA                                                 = 0x80E1;
+-    public static final int GL_TEXTURE_EXTERNAL_OES                                 = 0x8D65;
++    public static final int GL_TEXTURE_EXTERNAL_OES                                 = MISSING_EGL_EXTERNAL_IMAGE?0x0DE1:0x8D65;
+     public static final int GL_SAMPLER_EXTERNAL_OES                                 = 0x8D66;
+     public static final int GL_TEXTURE_BINDING_EXTERNAL_OES                         = 0x8D67;
+     public static final int GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES                     = 0x8D68;
+-- 
+1.7.9.1
+

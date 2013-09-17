@@ -1,0 +1,35 @@
+From eedd584a1d1806cecd6606e55e28307a14895161 Mon Sep 17 00:00:00 2001
+From: Grigori Goronzy <greg@blackbox>
+Date: Sun, 17 Mar 2013 15:23:10 +0100
+Subject: [PATCH] Disable effects that require libfacedetect
+
+It's not available for ARMv6, so these will crash.
+
+Change-Id: I3a5855e4c1d30d4e181ad1f8c35d3255ace90329
+---
+ res/layout/photoeditor_effects_fix.xml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/res/layout/photoeditor_effects_fix.xml b/res/layout/photoeditor_effects_fix.xml
+index 924190b..98105e3 100644
+--- a/res/layout/photoeditor_effects_fix.xml
++++ b/res/layout/photoeditor_effects_fix.xml
+@@ -38,6 +38,7 @@
+             android:text="@string/redeye"
+             style="@style/EffectLabel"/>
+     </com.android.gallery3d.photoeditor.actions.RedEyeAction>
++<!--
+     <com.android.gallery3d.photoeditor.actions.FaceliftAction style="@style/Effect">
+         <ImageView
+             style="@style/EffectIcon"
+@@ -56,6 +57,7 @@
+             android:text="@string/facetan"
+             style="@style/EffectLabel"/>
+     </com.android.gallery3d.photoeditor.actions.FaceTanAction>
++-->
+     <com.android.gallery3d.photoeditor.actions.StraightenAction style="@style/Effect"
+         android:tag="@string/straighten_tooltip">
+         <ImageView
+-- 
+1.8.2
+

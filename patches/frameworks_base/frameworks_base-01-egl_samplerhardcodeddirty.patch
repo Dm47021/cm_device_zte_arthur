@@ -1,0 +1,123 @@
+From 0c26442dec7d8cad2c19d3de2c9639bebea30b3e Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Thu, 19 Jul 2012 09:53:57 -0300
+Subject: [PATCH] Hard coded sampler2D force (MISSING_EGL_EXTERNAL_IMAGE)
+
+Change-Id: If0a74fc0c14dc53c0b0b535568307638228f7842
+---
+ .../android/filterpacks/videosrc/CameraSource.java |   11 ++++++++++-
+ .../android/filterpacks/videosrc/MediaSource.java  |   11 ++++++++++-
+ .../filterpacks/videosrc/SurfaceTextureSource.java |   11 ++++++++++-
+ 3 files changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/media/mca/filterpacks/java/android/filterpacks/videosrc/CameraSource.java b/media/mca/filterpacks/java/android/filterpacks/videosrc/CameraSource.java
+index 2c474ab..521234a 100644
+--- a/media/mca/filterpacks/java/android/filterpacks/videosrc/CameraSource.java
++++ b/media/mca/filterpacks/java/android/filterpacks/videosrc/CameraSource.java
+@@ -47,6 +47,7 @@ import android.util.Log;
+  * @hide
+  */
+ public class CameraSource extends Filter {
++    public static final boolean MISSING_EGL_EXTERNAL_IMAGE=true;
+ 
+     /** User-visible parameters */
+ 
+@@ -104,6 +105,14 @@ public class CameraSource extends Filter {
+             "void main() {\n" +
+             "  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n" +
+             "}\n";
++    private static final String mFrameShader2D =
++            "#extension GL_OES_EGL_image_external : require\n" +
++            "precision mediump float;\n" +
++            "uniform sampler2D tex_sampler_0;\n" +
++            "varying vec2 v_texcoord;\n" +
++            "void main() {\n" +
++            "  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n" +
++            "}\n";
+ 
+     private final boolean mLogVerbose;
+     private static final String TAG = "CameraSource";
+@@ -133,7 +142,7 @@ public class CameraSource extends Filter {
+     public void prepare(FilterContext context) {
+         if (mLogVerbose) Log.v(TAG, "Preparing");
+         // Compile shader TODO: Move to onGLEnvSomething?
+-        mFrameExtractor = new ShaderProgram(context, mFrameShader);
++        mFrameExtractor = new ShaderProgram(context, MISSING_EGL_EXTERNAL_IMAGE?mFrameShader2D:mFrameShader);
+     }
+ 
+     @Override
+diff --git a/media/mca/filterpacks/java/android/filterpacks/videosrc/MediaSource.java b/media/mca/filterpacks/java/android/filterpacks/videosrc/MediaSource.java
+index 9c40cec..b723433 100644
+--- a/media/mca/filterpacks/java/android/filterpacks/videosrc/MediaSource.java
++++ b/media/mca/filterpacks/java/android/filterpacks/videosrc/MediaSource.java
+@@ -51,6 +51,7 @@ import android.util.Log;
+  * @hide
+  */
+ public class MediaSource extends Filter {
++    public static final boolean MISSING_EGL_EXTERNAL_IMAGE=true;
+ 
+     /** User-visible parameters */
+ 
+@@ -119,6 +120,14 @@ public class MediaSource extends Filter {
+             "void main() {\n" +
+             "  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n" +
+             "}\n";
++    private final String mFrameShader2D =
++            "#extension GL_OES_EGL_image_external : require\n" +
++            "precision mediump float;\n" +
++            "uniform sampler2D tex_sampler_0;\n" +
++            "varying vec2 v_texcoord;\n" +
++            "void main() {\n" +
++            "  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n" +
++            "}\n";
+ 
+     // The following transforms enable rotation of the decoded source.
+     // These are multiplied with the transform obtained from the
+@@ -185,7 +194,7 @@ public class MediaSource extends Filter {
+     protected void prepare(FilterContext context) {
+         if (mLogVerbose) Log.v(TAG, "Preparing MediaSource");
+ 
+-        mFrameExtractor = new ShaderProgram(context, mFrameShader);
++        mFrameExtractor = new ShaderProgram(context, MISSING_EGL_EXTERNAL_IMAGE?mFrameShader2D:mFrameShader);
+         // SurfaceTexture defines (0,0) to be bottom-left. The filter framework
+         // defines (0,0) as top-left, so do the flip here.
+         mFrameExtractor.setSourceRect(0, 1, 1, -1);
+diff --git a/media/mca/filterpacks/java/android/filterpacks/videosrc/SurfaceTextureSource.java b/media/mca/filterpacks/java/android/filterpacks/videosrc/SurfaceTextureSource.java
+index 37fa242..81c6eae 100644
+--- a/media/mca/filterpacks/java/android/filterpacks/videosrc/SurfaceTextureSource.java
++++ b/media/mca/filterpacks/java/android/filterpacks/videosrc/SurfaceTextureSource.java
+@@ -60,6 +60,7 @@ import android.util.Log;
+  * @hide
+  */
+ public class SurfaceTextureSource extends Filter {
++    public static final boolean MISSING_EGL_EXTERNAL_IMAGE=true;
+ 
+     /** User-visible parameters */
+ 
+@@ -135,6 +136,14 @@ public class SurfaceTextureSource extends Filter {
+             "void main() {\n" +
+             "  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n" +
+             "}\n";
++    private final String mRenderShader2D =
++            "#extension GL_OES_EGL_image_external : require\n" +
++            "precision mediump float;\n" +
++            "uniform sampler2D tex_sampler_0;\n" +
++            "varying vec2 v_texcoord;\n" +
++            "void main() {\n" +
++            "  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n" +
++            "}\n";
+ 
+     // Variables for logging
+ 
+@@ -173,7 +182,7 @@ public class SurfaceTextureSource extends Filter {
+                                                                        0);
+ 
+         // Prepare output
+-        mFrameExtractor = new ShaderProgram(context, mRenderShader);
++        mFrameExtractor = new ShaderProgram(context, MISSING_EGL_EXTERNAL_IMAGE?mRenderShader2D:mRenderShader);
+     }
+ 
+     @Override
+-- 
+1.7.9.1
+

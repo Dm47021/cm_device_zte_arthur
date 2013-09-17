@@ -1,0 +1,89 @@
+From ac50cd0c10b97c7191dbc83b92628270ec666949 Mon Sep 17 00:00:00 2001
+From: Tanguy Pruvot <tanguy.pruvot@gmail.com>
+Date: Mon, 16 Jul 2012 15:09:43 +0200
+Subject: [PATCH] hwui: Allow to blacklist android applications
+
+Add support for a local config folder with blacklisted process names
+/data/local/hwui.deny/<package name>
+
+Only enabled with "hwui.use.blacklist=true"
+
+This system can be used easily from adb shell, without reboot
+or with a setting app, like the one i use, HwaSettings
+
+Change-Id: I436b5dd7d6bf9fd36be7e86fc9d2a174a66701ff
+
+Conflicts:
+
+	core/java/android/app/ActivityThread.java
+---
+ core/java/android/app/ActivityThread.java |   39 +++++++++++++++++++++++++++-
+ 1 files changed, 37 insertions(+), 2 deletions(-)
+
+diff --git a/core/java/android/app/ActivityThread.java b/core/java/android/app/ActivityThread.java
+index 7242029..8a26164 100644
+--- a/core/java/android/app/ActivityThread.java
++++ b/core/java/android/app/ActivityThread.java
+@@ -63,6 +63,8 @@ import android.os.StrictMode;
+ import android.os.SystemClock;
+ import android.os.Trace;
+ import android.os.UserId;
++import android.os.SystemProperties;
++import android.text.TextUtils;
+ import android.util.AndroidRuntimeException;
+ import android.util.DisplayMetrics;
+ import android.util.EventLog;
+@@ -3910,8 +3912,39 @@ public final class ActivityThread {
+         } catch (RemoteException e) {
+             // Ignore
+         }
+-    }    
+-    
++    }
++
++    /**
++     * hwui.use.blacklist allows to disable the hardware acceleration
++     * to specified applications processes, if files (process names)
++     * are present in /data/local/hwui.deny/
++     */
++    private boolean hwuiForbidden(String processName) {
++
++        boolean useBL = SystemProperties.getBoolean("hwui.use.blacklist", false);
++
++        // Default is allowed
++        boolean blacklisted = false;
++
++        if (!useBL || TextUtils.isEmpty(processName))
++            return blacklisted;
++
++        File hwuiConfig = new File("/data/local/hwui.deny/" + processName);
++        if (hwuiConfig.exists()) {
++            blacklisted = true;
++        }
++
++        hwuiConfig = null;
++
++        // Keep the logs to show process names with "adb logcat | grep listed"
++        if (!blacklisted)
++            Slog.v(TAG, processName + " white listed for hwui");
++        else
++            Slog.d(TAG, processName + " black listed for hwui");
++
++        return blacklisted;
++    }
++
+     private void handleBindApplication(AppBindData data) {
+         mBoundApplication = data;
+         mConfiguration = new Configuration(data.config);
+@@ -3934,6 +3967,8 @@ public final class ActivityThread {
+             if (!ActivityManager.isHighEndGfx(display)) {
+                 HardwareRenderer.disable(false);
+             }
++        } else if (hwuiForbidden(data.processName)) {
++            HardwareRenderer.disable(false);
+         }
+         
+         if (mProfiler.profileFd != null) {
+-- 
+1.7.9.1
+

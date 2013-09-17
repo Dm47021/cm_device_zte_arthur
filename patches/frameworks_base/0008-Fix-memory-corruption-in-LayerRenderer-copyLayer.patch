@@ -1,0 +1,170 @@
+From f37f3489c3a48f0b048b62563b35a2961581f61a Mon Sep 17 00:00:00 2001
+From: Romain Guy <romainguy@google.com>
+Date: Fri, 7 Sep 2012 18:42:38 -0700
+Subject: [PATCH 08/14] Fix memory corruption in LayerRenderer::copyLayer
+
+The pixel store pack alignment was not set for the source texture,
+causing a write to occur outside of the destination bitmap's
+bounds.
+
+Change-Id: Iaa5767acf7b5943fbc2765c3810a142f06b1a796
+
+Conflicts:
+	tests/HwAccelerationTest/AndroidManifest.xml
+---
+ libs/hwui/LayerRenderer.cpp                        |  2 +
+ tests/HwAccelerationTest/AndroidManifest.xml       | 36 ++++++++++
+ .../com/android/test/hwui/TJunctionActivity.java   | 81 ++++++++++++++++++++++
+ 3 files changed, 119 insertions(+)
+ create mode 100644 tests/HwAccelerationTest/src/com/android/test/hwui/TJunctionActivity.java
+
+diff --git a/libs/hwui/LayerRenderer.cpp b/libs/hwui/LayerRenderer.cpp
+index 5134b22..21df0ba 100644
+--- a/libs/hwui/LayerRenderer.cpp
++++ b/libs/hwui/LayerRenderer.cpp
+@@ -444,6 +444,8 @@ bool LayerRenderer::copyLayer(Layer* layer, SkBitmap* bitmap) {
+         caches.activeTexture(0);
+         glBindTexture(GL_TEXTURE_2D, texture);
+ 
++        glPixelStorei(GL_PACK_ALIGNMENT, bitmap->bytesPerPixel());
++
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+ 
+diff --git a/tests/HwAccelerationTest/AndroidManifest.xml b/tests/HwAccelerationTest/AndroidManifest.xml
+index 9e103ac..1d6f7e9 100644
+--- a/tests/HwAccelerationTest/AndroidManifest.xml
++++ b/tests/HwAccelerationTest/AndroidManifest.xml
+@@ -33,6 +33,42 @@
+         <meta-data android:name="android.graphics.renderThread" android:value="true" />
+ 
+         <activity
++                android:name="PathOffsetActivity"
++                android:label="_PathOffset">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++
++        <activity
++                android:name="TJunctionActivity"
++                android:label="_T-Junction">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++
++        <activity
++                android:name="TextPathActivity"
++                android:label="_TextPath">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++
++        <activity
++                android:name="GradientStopsActivity"
++                android:label="_GradientStops">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++
++        <activity
+                 android:name="PaintDrawFilterActivity"
+                 android:label="_DrawFilter">
+             <intent-filter>
+diff --git a/tests/HwAccelerationTest/src/com/android/test/hwui/TJunctionActivity.java b/tests/HwAccelerationTest/src/com/android/test/hwui/TJunctionActivity.java
+new file mode 100644
+index 0000000..d2bcae9
+--- /dev/null
++++ b/tests/HwAccelerationTest/src/com/android/test/hwui/TJunctionActivity.java
+@@ -0,0 +1,81 @@
++/*
++ * Copyright (C) 2012 The Android Open Source Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.test.hwui;
++
++import android.app.Activity;
++import android.content.Context;
++import android.graphics.Canvas;
++import android.graphics.Paint;
++import android.os.Bundle;
++import android.view.View;
++
++@SuppressWarnings("UnusedDeclaration")
++public class TJunctionActivity extends Activity {
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(new TJunctionView(this));
++    }
++
++    private class TJunctionView extends View {
++        private final Paint mPaint;
++
++        public TJunctionView(Context context) {
++            super(context);
++
++            setLayerType(LAYER_TYPE_HARDWARE, null);
++
++            mPaint = new Paint();
++        }
++
++        @Override
++        protected void onDraw(Canvas canvas) {
++            super.onDraw(canvas);
++
++            mPaint.setColor(0xffff0000);
++
++            canvas.translate(10.0f, 10.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            mPaint.setColor(0xff00ff00);
++
++            canvas.translate(50.0f, 50.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            mPaint.setColor(0xff0000ff);
++
++            canvas.translate(-25.0f, 50.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            mPaint.setColor(0xffffffff);
++
++            canvas.translate(150.0f, 75.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            canvas.translate(-50.0f, 75.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            canvas.translate(-75.0f, 50.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            canvas.translate(150.0f, 0.0f);
++            canvas.drawRect(0.0f, 0.0f, 100.0f, 50.0f, mPaint);
++
++            invalidate();
++        }
++    }
++}
+-- 
+1.8.1.1
+

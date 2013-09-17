@@ -1,0 +1,31 @@
+From b0c9d91e3da8a9f09aea15d5c07d6eac27647b56 Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Sat, 14 Jul 2012 17:13:01 -0300
+Subject: [PATCH 2/6] libui
+
+Change-Id: I1f449b21aaa6384580ded2560d804087610f3a19
+---
+ libs/ui/FramebufferNativeWindow.cpp |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/libs/ui/FramebufferNativeWindow.cpp b/libs/ui/FramebufferNativeWindow.cpp
+index c915f9a..fb73017 100644
+--- a/libs/ui/FramebufferNativeWindow.cpp
++++ b/libs/ui/FramebufferNativeWindow.cpp
+@@ -369,3 +369,13 @@ EGLNativeWindowType android_createDisplaySurface(void)
+     }
+     return (EGLNativeWindowType)w;
+ }
++
++extern "C" status_t _ZN7android7Overlay13dequeueBufferEPPv(void* buffer)
++{
++    return NO_ERROR;
++}
++
++extern "C" void _ZN7android7Overlay7destroyEv(void)
++{
++    return;
++}
+-- 
+1.7.9.1
+

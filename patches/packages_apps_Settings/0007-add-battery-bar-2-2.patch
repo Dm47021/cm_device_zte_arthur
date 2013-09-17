@@ -1,0 +1,46 @@
+From b57b53f05e714b68d8498c6011562f3df80150f1 Mon Sep 17 00:00:00 2001
+From: Konsta <konsta09@gmail.com>
+Date: Thu, 5 Jul 2012 00:51:19 +0300
+Subject: [PATCH 7/7] add battery bar (2/2)
+
+Change-Id: I3d582ba787721970ef2f973fac220ecc070b00b7
+---
+ res/values/arrays.xml  | 2 ++
+ res/values/strings.xml | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/res/values/arrays.xml b/res/values/arrays.xml
+index ab4a2f7..1000819 100644
+--- a/res/values/arrays.xml
++++ b/res/values/arrays.xml
+@@ -1024,6 +1024,7 @@
+         <item>@string/status_bar_battery_status_percentage</item>
+         <item>@string/status_bar_battery_status_circle</item>
+         <item>@string/status_bar_battery_status_circle_percentage</item>
++        <item>@string/status_bar_battery_status_statusbar</item>
+         <item>@string/status_bar_style_hidden</item>
+     </string-array>
+ 
+@@ -1032,6 +1033,7 @@
+         <item>1</item>
+         <item>2</item>
+         <item>3</item>
++        <item>5</item>
+         <item>4</item>
+     </string-array>
+ 
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index fd41631..f259255 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -4414,6 +4414,7 @@
+     <string name="status_bar_battery_status_percentage">Percentage</string>
+     <string name="status_bar_battery_status_circle">Circle</string>
+     <string name="status_bar_battery_status_circle_percentage">Circle with percentage</string>
++    <string name="status_bar_battery_status_statusbar">Status bar</string>
+ 
+     <string name="lock_screen_title">Lock screen</string>
+ 
+-- 
+1.8.2
+

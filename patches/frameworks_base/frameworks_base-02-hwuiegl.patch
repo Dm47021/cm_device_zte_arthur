@@ -1,0 +1,29 @@
+From 44df5f1a480efc73ee7a0a7eaa7a86b553f0aeb3 Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Mon, 23 Jul 2012 18:36:27 -0300
+Subject: [PATCH] MISSING_EGL_EXTERNAL_IMAGE on hwui
+
+Change-Id: Ibf2f7dd12b77009b183f6e8cdd0c3f09153af646
+---
+ libs/hwui/ProgramCache.cpp |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/libs/hwui/ProgramCache.cpp b/libs/hwui/ProgramCache.cpp
+index a7f1277..b5a628e 100644
+--- a/libs/hwui/ProgramCache.cpp
++++ b/libs/hwui/ProgramCache.cpp
+@@ -136,7 +136,11 @@ const char* gFS_Header_Uniforms_PointHasBitmap =
+ const char* gFS_Uniforms_TextureSampler =
+         "uniform sampler2D sampler;\n";
+ const char* gFS_Uniforms_ExternalTextureSampler =
++#ifdef MISSING_EGL_EXTERNAL_IMAGE
++        "uniform sampler2D sampler;\n";
++#else
+         "uniform samplerExternalOES sampler;\n";
++#endif
+ const char* gFS_Uniforms_GradientSampler[3] = {
+         // Linear
+         "uniform sampler2D gradientSampler;\n",
+-- 
+1.7.9.1
+

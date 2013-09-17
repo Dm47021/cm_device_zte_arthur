@@ -1,0 +1,29 @@
+From 97bd9ea24328ab75fd9af840d85ff90f0b55b04d Mon Sep 17 00:00:00 2001
+From: Romain Guy <romainguy@google.com>
+Date: Wed, 18 Jul 2012 20:26:02 -0700
+Subject: [PATCH 07/14] Optimize gradient textures
+
+Compute the size of the backing textures based on the maximum possible
+number of shades in the gradient.
+
+Change-Id: I2d7f20477d31b81e9735f2c1d83ebdd0dbcbe340
+---
+ libs/hwui/GradientCache.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libs/hwui/GradientCache.cpp b/libs/hwui/GradientCache.cpp
+index 3678788..0016b81 100644
+--- a/libs/hwui/GradientCache.cpp
++++ b/libs/hwui/GradientCache.cpp
+@@ -117,7 +117,7 @@ void GradientCache::clear() {
+ Texture* GradientCache::addLinearGradient(GradientCacheEntry& gradient,
+         uint32_t* colors, float* positions, int count, SkShader::TileMode tileMode) {
+     SkBitmap bitmap;
+-    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 1024, 1);
++    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 256 * (count - 1), 1);
+     bitmap.allocPixels();
+     bitmap.eraseColor(0);
+ 
+-- 
+1.8.1.1
+

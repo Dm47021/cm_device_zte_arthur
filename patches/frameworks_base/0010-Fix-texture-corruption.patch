@@ -1,0 +1,273 @@
+From 55ee03fa32e39b9698d7769217b1b56a6c1f52a3 Mon Sep 17 00:00:00 2001
+From: Chet Haase <chet@google.com>
+Date: Sun, 30 Sep 2012 12:14:13 -0700
+Subject: [PATCH 10/14] Fix texture corruption
+
+When memory gets low on a device, activities flush everything they can.
+Hardware-accelerated activites, such as Launcher, flush GL resources and destroy
+the GL context. However, some resources were still hanging around, due to deferred
+destruction policies (we don't delete layers until the DisplayLists they are in
+are finalized, to ensure we don't deref deleted objects). This meant that we were
+referring to obsolete GL data in these objects. in particular, it meant that we might
+come around later, after a new GL context was created, and delete a texture object
+that was incorrect. We use the layer's "texture id" to refer to the texture underlying the
+layer. But if there's a new GL context, then this texture ID is no longer valid, and
+we may be deleting the texture that a different object (layer, icon, whatever) is referring
+to, because the driver may return that same ID under the new GL context.
+
+The fix is to more aggressively delete things that we know will not be used again
+when the GL context is destroyed. In particular, we delete all resources being used
+by all DisplayLists at GL context destruction time.
+
+Issue #7195815 Textures corruption on all devices, in many apps
+
+Change-Id: I52d2d208173690dbb794a83402d38f14ea4c6c22
+---
+ core/java/android/view/DisplayList.java       |  7 +++
+ core/java/android/view/GLES20DisplayList.java |  8 ++++
+ core/java/android/view/View.java              |  3 ++
+ core/jni/android/graphics/Canvas.cpp          |  3 ++
+ core/jni/android_view_GLES20DisplayList.cpp   |  6 +++
+ libs/hwui/Caches.cpp                          |  4 +-
+ libs/hwui/DisplayListRenderer.cpp             | 64 +++++++++++++--------------
+ libs/hwui/DisplayListRenderer.h               |  3 +-
+ 8 files changed, 63 insertions(+), 35 deletions(-)
+
+diff --git a/core/java/android/view/DisplayList.java b/core/java/android/view/DisplayList.java
+index a42e156..5e34a36 100644
+--- a/core/java/android/view/DisplayList.java
++++ b/core/java/android/view/DisplayList.java
+@@ -332,4 +332,11 @@ public abstract class DisplayList {
+      * @see View#offsetTopAndBottom(int)
+      */
+     public abstract void offsetTopBottom(int offset);
++
++    /**
++     * Reset native resources. This is called when cleaning up the state of DisplayLists
++     * during destruction of hardware resources, to ensure that we do not hold onto
++     * obsolete resources after related resources are gone.
++     */
++    public abstract void reset();
+ }
+diff --git a/core/java/android/view/GLES20DisplayList.java b/core/java/android/view/GLES20DisplayList.java
+index 2d2e8e4..5efbac8 100644
+--- a/core/java/android/view/GLES20DisplayList.java
++++ b/core/java/android/view/GLES20DisplayList.java
+@@ -83,6 +83,13 @@ class GLES20DisplayList extends DisplayList {
+     }
+ 
+     @Override
++    public void reset() {
++        if (hasNativeDisplayList()) {
++            nReset(mFinalizer.mNativeDisplayList);
++        }
++    }
++
++    @Override
+     public boolean isValid() {
+         return mValid;
+     }
+@@ -290,6 +297,7 @@ class GLES20DisplayList extends DisplayList {
+         }
+     }
+ 
++    private static native void nReset(int displayList);
+     private static native void nOffsetTopBottom(int displayList, int offset);
+     private static native void nOffsetLeftRight(int displayList, int offset);
+     private static native void nSetLeftTopRightBottom(int displayList, int left, int top,
+diff --git a/core/java/android/view/View.java b/core/java/android/view/View.java
+index f0ca302..28acfad 100644
+--- a/core/java/android/view/View.java
++++ b/core/java/android/view/View.java
+@@ -12190,6 +12190,9 @@ public class View implements Drawable.Callback, Drawable.Callback2, KeyEvent.Cal
+                 mHardwareLayer.destroy();
+                 mHardwareLayer = null;
+ 
++                if (mDisplayList != null) {
++                    mDisplayList.reset();
++                }
+                 invalidate(true);
+                 invalidateParentCaches();
+             }
+diff --git a/core/jni/android/graphics/Canvas.cpp b/core/jni/android/graphics/Canvas.cpp
+index 6b74705..ecad5f2 100644
+--- a/core/jni/android/graphics/Canvas.cpp
++++ b/core/jni/android/graphics/Canvas.cpp
+@@ -882,6 +882,9 @@ public:
+         SkIRect ir;
+         bool     result = canvas->getClipBounds(&r, SkCanvas::kBW_EdgeType);
+ 
++        if (!result) {
++            r.setEmpty();
++        }
+         r.round(&ir);
+         (void)GraphicsJNI::irect_to_jrect(ir, env, bounds);
+         return result;
+diff --git a/core/jni/android_view_GLES20DisplayList.cpp b/core/jni/android_view_GLES20DisplayList.cpp
+index b307a2f..c5f52df 100644
+--- a/core/jni/android_view_GLES20DisplayList.cpp
++++ b/core/jni/android_view_GLES20DisplayList.cpp
+@@ -36,6 +36,11 @@ using namespace uirenderer;
+  */
+ #ifdef USE_OPENGL_RENDERER
+ 
++static void android_view_GLES20DisplayList_reset(JNIEnv* env,
++        jobject clazz, DisplayList* displayList) {
++    displayList->reset();
++}
++
+ // ----------------------------------------------------------------------------
+ // DisplayList view properties
+ // ----------------------------------------------------------------------------
+@@ -185,6 +190,7 @@ const char* const kClassPathName = "android/view/GLES20DisplayList";
+ 
+ static JNINativeMethod gMethods[] = {
+ #ifdef USE_OPENGL_RENDERER
++    { "nReset",                "(I)V",   (void*) android_view_GLES20DisplayList_reset },
+     { "nSetCaching",           "(IZ)V",  (void*) android_view_GLES20DisplayList_setCaching },
+     { "nSetStaticMatrix",      "(II)V",  (void*) android_view_GLES20DisplayList_setStaticMatrix },
+     { "nSetAnimationMatrix",   "(II)V",  (void*) android_view_GLES20DisplayList_setAnimationMatrix },
+diff --git a/libs/hwui/Caches.cpp b/libs/hwui/Caches.cpp
+index f210820..2b166fb 100644
+--- a/libs/hwui/Caches.cpp
++++ b/libs/hwui/Caches.cpp
+@@ -236,8 +236,6 @@ void Caches::deleteDisplayListDeferred(DisplayList* displayList) {
+ void Caches::flush(FlushMode mode) {
+     FLUSH_LOGD("Flushing caches (mode %d)", mode);
+ 
+-    clearGarbage();
+-
+     switch (mode) {
+         case kFlushMode_Full:
+             textureCache.clear();
+@@ -260,6 +258,8 @@ void Caches::flush(FlushMode mode) {
+             layerCache.clear();
+             break;
+     }
++
++    clearGarbage();
+ }
+ 
+ ///////////////////////////////////////////////////////////////////////////////
+diff --git a/libs/hwui/DisplayListRenderer.cpp b/libs/hwui/DisplayListRenderer.cpp
+index b2c922f..b621786 100644
+--- a/libs/hwui/DisplayListRenderer.cpp
++++ b/libs/hwui/DisplayListRenderer.cpp
+@@ -106,35 +106,6 @@ DisplayList::~DisplayList() {
+     clearResources();
+ }
+ 
+-void DisplayList::initProperties() {
+-    mLeft = 0;
+-    mTop = 0;
+-    mRight = 0;
+-    mBottom = 0;
+-    mClipChildren = true;
+-    mAlpha = 1;
+-    mMultipliedAlpha = 255;
+-    mHasOverlappingRendering = true;
+-    mTranslationX = 0;
+-    mTranslationY = 0;
+-    mRotation = 0;
+-    mRotationX = 0;
+-    mRotationY= 0;
+-    mScaleX = 1;
+-    mScaleY = 1;
+-    mPivotX = 0;
+-    mPivotY = 0;
+-    mCameraDistance = 0;
+-    mMatrixDirty = false;
+-    mMatrixFlags = 0;
+-    mPrevWidth = -1;
+-    mPrevHeight = -1;
+-    mWidth = 0;
+-    mHeight = 0;
+-    mPivotExplicitlySet = false;
+-    mCaching = false;
+-}
+-
+ void DisplayList::destroyDisplayListDeferred(DisplayList* displayList) {
+     if (displayList) {
+         DISPLAY_LIST_LOGD("Deferring display list destruction");
+@@ -205,8 +176,12 @@ void DisplayList::clearResources() {
+     mMatrices.clear();
+ }
+ 
++void DisplayList::reset() {
++    clearResources();
++    init();
++}
++
+ void DisplayList::initFromDisplayListRenderer(const DisplayListRenderer& recorder, bool reusing) {
+-    const SkWriter32& writer = recorder.writeStream();
+ 
+     if (reusing) {
+         // re-using display list - clear out previous allocations
+@@ -214,8 +189,8 @@ void DisplayList::initFromDisplayListRenderer(const DisplayListRenderer& recorde
+     }
+ 
+     init();
+-    initProperties();
+ 
++    const SkWriter32& writer = recorder.writeStream();
+     if (writer.size() == 0) {
+         return;
+     }
+@@ -280,7 +255,32 @@ void DisplayList::initFromDisplayListRenderer(const DisplayListRenderer& recorde
+ void DisplayList::init() {
+     mSize = 0;
+     mIsRenderable = true;
+-    mFunctorCount = 0;
++    mLeft = 0;
++    mTop = 0;
++    mRight = 0;
++    mBottom = 0;
++    mClipChildren = true;
++    mAlpha = 1;
++    mMultipliedAlpha = 255;
++    mHasOverlappingRendering = true;
++    mTranslationX = 0;
++    mTranslationY = 0;
++    mRotation = 0;
++    mRotationX = 0;
++    mRotationY= 0;
++    mScaleX = 1;
++    mScaleY = 1;
++    mPivotX = 0;
++    mPivotY = 0;
++    mCameraDistance = 0;
++    mMatrixDirty = false;
++    mMatrixFlags = 0;
++    mPrevWidth = -1;
++    mPrevHeight = -1;
++    mWidth = 0;
++    mHeight = 0;
++    mPivotExplicitlySet = false;
++    mCaching = false;
+ }
+ 
+ size_t DisplayList::getSize() {
+diff --git a/libs/hwui/DisplayListRenderer.h b/libs/hwui/DisplayListRenderer.h
+index 2887357..e0fa983 100644
+--- a/libs/hwui/DisplayListRenderer.h
++++ b/libs/hwui/DisplayListRenderer.h
+@@ -137,6 +137,8 @@ public:
+ 
+     void output(OpenGLRenderer& renderer, uint32_t level = 0);
+ 
++    ANDROID_API void reset();
++
+     void setRenderable(bool renderable) {
+         mIsRenderable = renderable;
+     }
+@@ -399,7 +401,6 @@ public:
+ 
+ private:
+     void init();
+-    void initProperties();
+ 
+     void clearResources();
+ 
+-- 
+1.8.1.1
+

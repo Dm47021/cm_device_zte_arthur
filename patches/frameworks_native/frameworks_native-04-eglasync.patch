@@ -1,0 +1,28 @@
+From c8be14e3de7dfc532f6a04382b93fbf9d695d866 Mon Sep 17 00:00:00 2001
+From: Emerson Pinter <dev@pinter.com.br>
+Date: Thu, 19 Jul 2012 11:28:20 -0300
+Subject: [PATCH 4/6] EGL_ALWAYS_ASYNC
+
+Change-Id: I539ae83385a572c4599f482ff9dca3d39128e76e
+---
+ libs/gui/SurfaceTextureClient.cpp |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/libs/gui/SurfaceTextureClient.cpp b/libs/gui/SurfaceTextureClient.cpp
+index 36a81a6..be29984 100644
+--- a/libs/gui/SurfaceTextureClient.cpp
++++ b/libs/gui/SurfaceTextureClient.cpp
+@@ -152,6 +152,10 @@ int SurfaceTextureClient::setSwapInterval(int interval) {
+     if (interval > maxSwapInterval)
+         interval = maxSwapInterval;
+ 
++#ifdef EGL_ALWAYS_ASYNC
++    if (mReqUsage != 0)
++        interval = 0;
++#endif
+     status_t res = mSurfaceTexture->setSynchronousMode(interval ? true : false);
+ 
+     return res;
+-- 
+1.7.9.1
+
