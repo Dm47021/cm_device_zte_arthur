@@ -104,6 +104,7 @@ PRODUCT_PACKAGES += \
  
 # WarpedParts App
 PRODUCT_PACKAGES += \
+       # HwaSettings \
         V9Parts
 
 # Live Wallpapers
@@ -385,7 +386,6 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.fm.sh:system/etc/init.qcom.fm.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.sdio.sh:system/etc/init.qcom.sdio.sh \
-        device/zte/arthur/prebuilt/files/etc/init.d/01cm.init.libra.wifi:system/etc/init.d/01cminit.libra.wifi.sh \
 	device/zte/arthur/prebuilt/b08c/etc/vold.fstab:system/etc/vold.fstab \
         device/zte/arthur/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
 
@@ -421,11 +421,4 @@ PRODUCT_COPY_FILES += \
     system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
     system/bluetooth/data/main.le.conf:system/etc/bluetooth/main.conf \
     system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
-
-## PREBUILT WiFi Modules
-
-# We Use a prebuilt librasdioif.ko because the one produced by the kernel doesnt work, something hroark did, only works with the module from his 7 kernel.
-PRODUCT_COPY_FILES += \
-      device/zte/arthur/wifi_modules/libra.ko:system/lib/modules/libra.ko \
-      device/zte/arthur/wifi_modules/libra_ftm.ko:system/lib/modules/libra_ftm.ko
 

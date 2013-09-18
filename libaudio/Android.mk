@@ -9,12 +9,11 @@ LOCAL_SRC_FILES := \
     AudioHardware.cpp \
     audio_hw_hal.cpp
 
-ifeq ($(BOARD_HAVE_BLUETOOTH_BLUEZ),true)
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
     LOCAL_CFLAGS += -DWITH_A2DP
 endif
 
 ifeq ($(BOARD_HAVE_QCOM_FM),true)
-    LOCAL_CFLAGS += -DWITH_QCOM_FM
     LOCAL_CFLAGS += -DQCOM_FM_ENABLED
 endif
 
@@ -104,10 +103,6 @@ endif
 
 ifeq ($(BOARD_USES_QCOM_AUDIO_LPA),true)
     LOCAL_CFLAGS += -DQCOM_TUNNEL_LPA_ENABLED
-endif
-
-ifeq ($(BOARD_HAVE_BLUETOOTH_BLUEZ),true)
-  LOCAL_CFLAGS += -DWITH_A2DP
 endif
 
 LOCAL_C_INCLUDES := hardware/libhardware_legacy/audio
