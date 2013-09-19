@@ -158,7 +158,8 @@ ro.qualcomm.bluetooth.ftp=true
 #
 ro.bluetooth.request.master=true
 
-
+#DRM
+ro.feature.ztedrm.support=1
 
 #
 # System prop for using landscape preview layout in camera

@@ -469,7 +469,22 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
 service drm /system/bin/drmserver
     class main
     user drm
-    group drm system inet drmrpc sdcard_r
+# modified by Dm47021 add qcom_oncrpr for widevine(GTS)
+    group drm system inet drmrpc sdcard_r qcom_oncrpc
+# mod ends here
+
+# DM091913JB_Warp start DRM service
+service DrmHost /system/bin/DrmHost
+    class late_start 
+    disabled
+# DM091913JB_Warp start DRM service end
+
+on property:ro.feature.ztedrm.support=1
+    mkdir /data/oma 1777
+    chmod 1777 /data/oma
+    mkdir /data/oma/conf 1777
+    chmod 1777 /data/oma/conf
+    start DrmHost 
 
 service media /system/bin/mediaserver
     class main
