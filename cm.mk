@@ -11,8 +11,9 @@ $(call inherit-product, device/zte/arthur/full_arthur.mk)
 PRODUCT_COPY_FILES+= \
     device/zte/arthur/prebuilt/files/etc/apns-conf.xml:system/etc/apns-conf.xml
 
-# inherit Osiris Mods
-#$(call inherit-product, vendor/osiris/prebullt/osirismod.mk)
+# Hot reboot
+PRODUCT_PACKAGE_OVERLAYS += \
+    vendor/cm/overlay/hot_reboot
 
 ## Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := arthur

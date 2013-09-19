@@ -12,7 +12,7 @@ else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 # modules
-$(call inherit-product-if-exists, $(LOCAL_PATH)wifi_modules/modules.mk)
+$(call inherit-product-if-exists, device/zte/arthur/wifi_modules/modules.mk)
 
 $(call inherit-product-if-exists, vendor/zte/arthur/arthur-vendor.mk)
 

@@ -466,11 +466,14 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart restart media
     onrestart restart netd
 
+# Dirty hack for DRM -- Only way it seems to work *-- DM091913JB_Warp drm
+chmod 7777 /system/bin/drmserver # <-- hack
 service drm /system/bin/drmserver
     class main
-    user drm
+    user system drm
 # modified by Dm47021 add qcom_oncrpr for widevine(GTS)
     group drm system inet drmrpc sdcard_r qcom_oncrpc
+start drmserver # <-- hack "this shouldnt be necsesary"
 # mod ends here
 
 # DM091913JB_Warp start DRM service
