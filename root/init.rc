@@ -502,6 +502,11 @@ service bootanim /system/bin/bootanimation
     disabled
     oneshot
 
+# DM092013JB_Warp bt.prop 
+service bluetooth_prop /system/bin/sh /system/bin/init.btprop.sh
+    class main 
+    oneshot
+
 service dbus /system/bin/dbus-daemon --system --nofork
     class main
     socket dbus stream 660 bluetooth bluetooth
