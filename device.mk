@@ -49,7 +49,11 @@ PRODUCT_PACKAGES += \
         gralloc.msm7x30 \
         hwcomposer.msm7x30 \
         libgenlock \
-        libtilerenderer 
+        libmemalloc \
+        liboverlay \
+        libQcomUI \
+        libtilerenderer \
+    
 
 # OMX
 PRODUCT_PACKAGES += \
@@ -70,7 +74,7 @@ PRODUCT_PACKAGES += \
         audio_policy.msm7x30 \
         audio.primary.msm7x30 \
         audio_policy.conf \
-        libaudioutils
+        libaudioutils 
 
 
 ## Bluetooth
@@ -106,7 +110,6 @@ PRODUCT_PACKAGES += \
  
 # WarpedParts App
 PRODUCT_PACKAGES += \
-       # HwaSettings \
         V9Parts
 
 # Live Wallpapers
@@ -124,7 +127,6 @@ PRODUCT_PACKAGES += \
 	libinvensense_hal \
 	liblasic \
 	liblinenoise \
-	libmemalloc \
 	libmllite \
 	libmlplatform \
 	libmmjpeg_interface \
@@ -365,6 +367,8 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/bin/getlogtofile:system/bin/getlogtofile \
 	device/zte/arthur/prebuilt/b08c/bin/hci_qcomm_init:system/bin/hci_qcomm_init \
 	device/zte/arthur/prebuilt/b08c/bin/hlr_auc_gw:system/bin/hlr_auc_gw \
+        device/zte/arthur/prebuilt/b08c/bin/hostapd:system/bin/hostapd \
+        device/zte/arthur/prebuilt/b08c/bin/hostapd_cli:system/bin/hostapd_cli \
 	device/zte/arthur/prebuilt/b08c/bin/init.btprop.sh:system/bin/init.btprop.sh \
         device/zte/arthur/prebuilt/b08c/bin/iprenew:system/bin/iprenew \
 	device/zte/arthur/prebuilt/b08c/bin/loc_api_app:system/bin/loc_api_app \
