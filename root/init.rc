@@ -565,3 +565,29 @@ service mdnsd /system/bin/mdnsd
     socket mdnsd stream 0660 mdnsr inet
     disabled
     oneshot
+
+#DM092013JB_Warp DHCP / IPRENEW
+service dhcpcd_wlan0 /system/bin/dhcpcd -BKLG
+    class late_start
+    disabled
+    oneshot
+
+service dhcpcd_p2p /system/bin/dhcpcd -BKLG
+    class late_start
+    disabled
+    oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class late_start
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n p2p
+    class late_start
+    disabled
+    oneshot
+	
+service iprelease_wlan0 /system/bin/dhcpcd -k
+    class late_start
+    disabled
+    oneshot
