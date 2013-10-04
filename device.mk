@@ -94,7 +94,7 @@ PRODUCT_PACKAGES += \
 # gps
 PRODUCT_PACKAGES += \
         librpc \
-        gps.default 
+        gps.arthur
 
 # Power HAL
 PRODUCT_PACKAGES += \

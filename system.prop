@@ -2,8 +2,6 @@
 # system.prop for arthur
 #
 
-# Bluetooth
-bt.chip.type=qtr8600
 
 wlan.driver.status=ok
 wifi.supplicant_scan_interval=90
