@@ -352,7 +352,7 @@ on property:persist.cne.UseCne=Vendor
     start cnd
 
 service hci_qcomm_init /system/bin/log -t qcom-bluetooth -p i "hci_qcomm_init service requested"
-    clas main
+    class main
     user bluetooth
     group qcom_oncrpc bluetooth net_bt_admin
     disabled
