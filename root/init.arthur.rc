@@ -331,25 +331,12 @@ on property:ro.product.device=msm7630_fusion
 on property:init.svc.wpa_supplicant=stopped
     stop dhcpcd
 
-on property:bluetooth.isEnabled=true
+on property:init.svc.bluetoothd=running
     write /sys/devices/virtual/bluetooth/hci0/idle_timeout 7000
     start btwlancoex
-    start amp_load
 
-on property:bluetooth.isEnabled=false
-    start amp_unload
+on property:init.svc.bluetoothd=stopped
     stop btwlancoex
-
-service cnd /system/bin/cnd
-    class late_start
-    socket cnd stream 666 root radio
-    disabled
-
-on property:persist.cne.UseCne=vendor
-    start cnd
-
-on property:persist.cne.UseCne=Vendor
-    start cnd
 
 service hci_qcomm_init /system/bin/log -t qcom-bluetooth -p i "hci_qcomm_init service requested"
     class main
@@ -366,37 +353,6 @@ service rmt_storage /sbin/rmt_storage /dev/block/mmcblk0p5 /dev/block/mmcblk0p6 
 on property:ro.emmc=1
     start rmt_storage
 
-service config_bluetooth /system/bin/sh /system/etc/init.qcom.bt.sh "onboot"
-    class core
-    user root
-    oneshot
-
-service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
-    class late_start
-    user system
-    group system inet
-    disabled
-
-service qmuxd /system/bin/qmuxd
-    class core
-    user radio
-    group radio
-    disabled
-
-service netmgrd /system/bin/netmgrd
-    class late_start
-    disabled
-
-on property:ro.use_data_netmgrd=false
-    # netmgr not supported on specific target
-    stop netmgrd
-
-on property:bluetooth.hciattach=true
-    start hciattach
-
-on property:bluetooth.hciattach=false
-    setprop bluetooth.status off
-
 service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class late_start
     user bluetooth
@@ -404,27 +360,8 @@ service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     disabled
     oneshot
 
-service bt-sap /system/bin/sapd 15
-    class late_start
-    disabled
-    oneshot
-
-service sapd /system/bin/sdptool add --channel=15 SAP
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
 service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
     class late_start
-    disabled
-    oneshot
-
-service dund /system/bin/sdptool add --channel=1 DUN
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
     disabled
     oneshot
 
@@ -437,6 +374,45 @@ service bridgemgrd /system/bin/bridgemgrd
 on property:ro.baseband="msm"
     # Enable BT-DUN only for all msms
     setprop ro.qualcomm.bluetooth.dun true
+
+service config_bluetooth /system/bin/sh /system/etc/init.qcom.bt.sh "onboot"
+    class core
+    user root
+    oneshot
+
+service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
+    class late_start
+    user system
+    group system inet
+    disabled
+
+service at-daemon /system/bin/at-daemon
+    class late_start
+
+service qmuxd /system/bin/qmuxd
+    class core
+    user radio
+    group radio
+    disabled
+
+service netmgrd /system/bin/netmgrd
+    disabled
+
+on property:ro.use_data_netmgrd=false
+    # netmgr not supported on specific target
+    stop netmgrd
+
+service bt-sap /system/bin/sapd 15
+    class late_start
+    disabled
+    oneshot
+
+service sapd /system/bin/sdptool add --channel=15 SAP
+    class late_start
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
 
 service qmiproxy /system/bin/qmiproxy
     class late_start
@@ -514,14 +490,6 @@ service dhcpcd_wlan0 /system/bin/dhcpcd -BKL wlan0
     disabled
     oneshot
 
-service hostapd /system/bin/hostapd -dddd /data/misc/wifi/hostapd.conf
-    class late_start
-    socket hostapd_wlan0 dgram 660 root wifi
-    user root
-    group wifi
-    oneshot
-    disabled
-
 service iprenew_wlan0 /system/bin/dhcpcd -n wlan0
     class late_start
     disabled
@@ -530,25 +498,6 @@ service iprenew_wlan0 /system/bin/dhcpcd -n wlan0
 service dhcpcd_bnep0 /system/bin/dhcpcd -BKLG
     disabled
     oneshot
-
-service dhcpcd_bnep1 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep2 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep3 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep4 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service at-daemon /system/bin/at-daemon
-    class late_start
 
 #Start service for loc_api_app
 service loc_api_app /system/bin/loc_api_app
@@ -599,36 +548,19 @@ service qcom-sh /system/bin/sh /init.qcom.sh
     user root
     oneshot
 
+service akmd /system/bin/akmd8962
+    class main
+    user root
+    oneshot
+
 service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
     class late_start
     user root
     disabled
     oneshot
 
-service qcom-wifi /system/bin/sh /system/etc/init.qcom.wifi.sh
-    class late_start
-    user root
-    disabled
-    oneshot
-
-service akmd /system/bin/akmd8962
-    class main
-    user root
-    oneshot
-
-on property:init.svc.bootanim=stopped
-    start qcom-post-boot
-
-service ckpd /system/bin/CKPD-daemon
-    class main
-    disabled
-    onrestart /system/bin/log -t RIL-CKPD -p w "CKPD daemon restarted"
-
-on property:ro.service.ckpd.enable=1
-    start ckpd
-    
 service getlog /system/bin/getlogtofile
-    class main
+    class late_start
     user root
     disabled
     oneshot
@@ -645,6 +577,16 @@ on property:persist.sys.ztelog.enable=1
 on property:persist.sys.ztelog.enable=0
     stop getlog
 
+on property:init.svc.bootanim=stopped
+    start qcom-post-boot
+
+service ckpd /system/bin/CKPD-daemon
+    class main
+    disabled
+    onrestart /system/bin/log -t RIL-CKPD -p w "CKPD daemon restarted"
+
+on property:ro.service.ckpd.enable=1
+    start ckpd
 
 on property:ro.service.ckpd.enable=1
     start ckpd
@@ -656,6 +598,14 @@ service hdmid /system/bin/hdmid
 
 on property:ro.hdmi.enable=true
     start hdmid
+
+service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
+    class late_start
+    socket hostapd_wlan0 dgram 660 root wifi
+    user root
+    group root
+    oneshot
+    disabled
 
 service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
     class late_start
@@ -689,7 +639,7 @@ on property:persist.thermal.monitor=true
     start thermald
 
 service time_daemon /system/bin/time_daemon
-    class late_start
+    class main
     user root
     group root
     oneshot
@@ -707,7 +657,7 @@ service ftp /system/bin/sdptool add --psm=5257 --channel=20 FTP
     oneshot
 
 service map /system/bin/sdptool add --channel=16 MAS
-    class late_start
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
@@ -730,9 +680,6 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin net_bt_stack
     disabled
-
-on property:ro.qc.bluetooth.stack=bluez
-    start dbus
 
 service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n
     class late_start
