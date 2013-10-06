@@ -351,6 +351,13 @@ on property:persist.cne.UseCne=vendor
 on property:persist.cne.UseCne=Vendor
     start cnd
 
+service hci_qcomm_init /system/bin/log -t qcom-bluetooth -p i "hci_qcomm_init service requested"
+    clas main
+    user bluetooth
+    group qcom_oncrpc bluetooth net_bt_admin
+    disabled
+    oneshot
+
 service rmt_storage /sbin/rmt_storage /dev/block/mmcblk0p5 /dev/block/mmcblk0p6 /dev/block/mmcblk0p10 /dev/block/mmcblk0p11 /dev/block/mmcblk0p17
     class core
     user root

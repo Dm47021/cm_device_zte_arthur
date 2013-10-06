@@ -5,6 +5,7 @@
 #
 
 import /init.${ro.hardware}.rc
+import /init.cm.rc
 import /init.usb.rc
 import /init.trace.rc
 
