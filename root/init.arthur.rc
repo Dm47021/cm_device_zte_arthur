@@ -277,6 +277,8 @@ on property:init.svc.qcom-sh=stopped
     #ZTE_TORCH_YTC_20110913 BEGIN
     chown system system /sys/class/leds/flashlight/brightness
     chmod 0774 /sys/class/leds/flashlight/brightness
+    chown system system /sys/class/leds/blue/brightness
+    chmod 0774 /sys/class/leds/blue/brightness
     #ZTE_TORCH_YTC_20110913 end
     
     #Provide the access to hostapd.conf only to root and group
@@ -396,6 +398,7 @@ service qmuxd /system/bin/qmuxd
     disabled
 
 service netmgrd /system/bin/netmgrd
+    class main
     disabled
 
 on property:ro.use_data_netmgrd=false
@@ -478,7 +481,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
         oneshot
 
 service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -dd
-    class late_start
+    class main
     user root wifi
     group wifi inet
     socket wpa_wlan0 dgram 660 wifi wifi
@@ -486,12 +489,12 @@ service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant -Dwext 
     oneshot
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -BKL wlan0
-    class late_start
+    class core
     disabled
     oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n wlan0
-    class late_start
+    class main
     disabled
     oneshot
 
@@ -639,9 +642,8 @@ on property:persist.thermal.monitor=true
     start thermald
 
 service time_daemon /system/bin/time_daemon
-    class main
-    user root
-    group root
+    user system
+    group system qcom_oncrpc
     oneshot
     disabled
 
@@ -657,7 +659,7 @@ service ftp /system/bin/sdptool add --psm=5257 --channel=20 FTP
     oneshot
 
 service map /system/bin/sdptool add --channel=16 MAS
-    class main
+    class late_start
     user bluetooth
     group bluetooth net_bt_admin
     disabled
@@ -675,11 +677,14 @@ on property:ro.multi.rild=true
     start ril-daemon1
 
 service dbus /system/bin/dbus-daemon --system --nofork
-    class main
+    class late_start
     socket dbus stream 660 bluetooth bluetooth
     user bluetooth
     group bluetooth net_bt_admin net_bt_stack
     disabled
+
+on property:ro.qc.bluetooth.stack=bluez
+    start dbus
 
 service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n
     class late_start

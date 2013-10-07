@@ -240,7 +240,7 @@ on post-fs-data
 mkdir /data/misc/dhcp 0770 dhcp dhcp
     mkdir /data/system 0775 system system
     symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
-	
+
 #set the right for wlan driver to control slot3's polling property
 	chown system system /sys/bus/platform/devices/msm_sdcc.3/polling
 #=======create WLAN filesystem structure ---==========================	
@@ -542,13 +542,13 @@ service bluetooth_prop /system/bin/sh /system/bin/init.btprop.sh
     oneshot
 
 service dbus /system/bin/dbus-daemon --system --nofork
-    class late_start
+    class main
     socket dbus stream 660 bluetooth bluetooth
     user bluetooth
     group bluetooth net_bt_admin
 
 service bluetoothd /system/bin/bluetoothd -n
-    class late_start
+    class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
     # init.rc does not yet support applying capabilities, so run as root and
@@ -620,7 +620,7 @@ service iprenew_p2p /system/bin/dhcpcd -n p2p
     class late_start
     disabled
     oneshot
-	
+
 service iprelease_wlan0 /system/bin/dhcpcd -k
     class late_start
     disabled
