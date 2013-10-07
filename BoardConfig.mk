@@ -33,6 +33,9 @@ BOARD_NEEDS_MEMORYHEAPPMEM := true
 BOARD_VENDOR := zte
 USE_CAMERA_STUB := false
 TARGET_DISABLE_ARM_PIE := true
+BOARD_USES_LEGACY_OVERLAY := true
+## Improve linkage between proprietary libs, This should fix liboemcamera crash
+BOARD_USE_NASTY_PTHREAD_CREATE_HACK := true
 
 #Board Settings
 TARGET_BOARD_PLATFORM := msm7x30

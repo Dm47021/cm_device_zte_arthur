@@ -177,6 +177,6 @@
 
 /dev/oncrpc/*        0660   radio     radio
 /data/radio/*        7777   radio     radio
-
+/dev/rfkill          0660    wifi    wifi
 
 

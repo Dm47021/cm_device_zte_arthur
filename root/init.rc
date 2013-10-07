@@ -229,6 +229,7 @@ on post-fs-data
     mkdir /data/misc/keychain 0771 system system
     mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
+
 #=======create WLAN filesystem structure +++==========================
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
@@ -242,7 +243,12 @@ mkdir /data/misc/dhcp 0770 dhcp dhcp
     symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
 #set the right for wlan driver to control slot3's polling property
-	chown system system /sys/bus/platform/devices/msm_sdcc.3/polling
+# Chown polling nodes as needed from UI running on system server
+    chown system system /sys/bus/platform/devices/msm_sdcc.1/polling
+    chown system system /sys/bus/platform/devices/msm_sdcc.2/polling
+    chown system system /sys/bus/platform/devices/msm_sdcc.3/polling
+    chown system system /sys/bus/platform/devices/msm_sdcc.4/polling
+
 #=======create WLAN filesystem structure ---==========================	
 # ZTE_ZBS_20110107 ---  
     setprop wifi.chip.type WCN
@@ -512,7 +518,7 @@ start drmserver # <-- hack "this shouldnt be necsesary"
 
 # DM091913JB_Warp start DRM service
 service DrmHost /system/bin/DrmHost
-    class late_start 
+    class main 
     disabled
 # DM091913JB_Warp start DRM service end
 
@@ -602,26 +608,26 @@ service mdnsd /system/bin/mdnsd
 
 #DM092013JB_Warp DHCP / IPRENEW
 service dhcpcd_wlan0 /system/bin/dhcpcd -BKLG
-    class late_start
+    class main
     disabled
     oneshot
 
 service dhcpcd_p2p /system/bin/dhcpcd -BKLG
-    class late_start
+    class main
     disabled
     oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n
-    class late_start
+    class main
     disabled
     oneshot
 
 service iprenew_p2p /system/bin/dhcpcd -n p2p
-    class late_start
+    class main
     disabled
     oneshot
 
 service iprelease_wlan0 /system/bin/dhcpcd -k
-    class late_start
+    class main
     disabled
     oneshot
