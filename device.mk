@@ -74,7 +74,8 @@ PRODUCT_PACKAGES += \
         audio_policy.msm7x30 \
         audio.primary.msm7x30 \
         audio_policy.conf \
-        libaudioutils 
+        libaudioutils \
+        libtinyalsa
 
 
 ## Bluetooth
@@ -90,6 +91,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     LegacyCamera \
     camera.msm7x30 \
+    libcamera 
 
 # gps
 PRODUCT_PACKAGES += \
