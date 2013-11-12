@@ -90,10 +90,6 @@ PRODUCT_PACKAGES += \
     libbluetoothd \
     javax.btobex
 
-# Hardware MAC address tool
-PRODUCT_PACKAGES += \
-	hwmac
-
 # Camera
 PRODUCT_PACKAGES += \
     LegacyCamera \
