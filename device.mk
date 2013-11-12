@@ -26,7 +26,9 @@ PRODUCT_PROPERTY_OVERRIDES+= dalvik.vm.execution-mode=int:jit \
 	debug.enabletr=true \
 	persist.sys.use_dithering=0 \
 	ro.com.google.locationfeatures=1 \
-	mobiledata.interfaces = wlan0,rmnet0,bnep
+	mobiledata.interfaces = wlan0,rmnet0 \
+        dev.dmm.dpd.trigger_delay=30 
+        
 
 # Audio
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -83,9 +85,14 @@ PRODUCT_PACKAGES += \
     hciattach \
     hciconfig \
     hcitool \
+    sdptool \
     libbluetooth \
     libbluetoothd \
     javax.btobex
+
+# Hardware MAC address tool
+PRODUCT_PACKAGES += \
+	hwmac
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -256,7 +263,11 @@ PRODUCT_COPY_FILES += \
     device/zte/arthur/prebuilt/files/lib/libOpenVG.so:system/lib/libOpenVG.so \
     device/zte/arthur/prebuilt/files/lib/libsc-a2xx.so:system/lib/libsc-a2xx.so \
     device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:obj/lib/libaudioalsa.so \
-    device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:system/lib/libaudioalsa.so
+    device/zte/arthur/prebuilt/b08c/lib/libaudioalsa.so:system/lib/libaudioalsa.so \
+    device/zte/arthur/prebuilt/files/lib/liboncrpc.so:system/lib/liboncrpc.so \
+    device/zte/arthur/prebuilt/files/lib/liboncrpc.so:obj/lib/liboncrpc.so \
+    device/zte/arthur/prebuilt/files/lib/libnv.so:system/lib/libnv.so \
+    device/zte/arthur/prebuilt/files/lib/libnv.so:obj/lib/libnv.so
 
 # Legacy Touch Screen
 PRODUCT_COPY_FILES += \
@@ -318,10 +329,10 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b06ril/lib/libloc-rpc.so:system/lib/libloc-rpc.so \
 	device/zte/arthur/prebuilt/b06ril/lib/librefcne.so:system/lib/librefcne.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-cdma-sms.so:system/lib/libreference-cdma-sms.so \
+        device/zte/arthur/prebuilt/b06ril/lib/librilso:system/lib/libril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/librilso:obj/lib/libril.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:obj/lib/libreference-ril.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:system/lib/libreference-ril.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libril.so:obj/lib/libril.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libril.so:system/lib/libril.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libril-qc-1.so:system/lib/libril-qc-1.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libril-qc-qmi-1.so:system/lib/libril-qc-qmi-1.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libril-qcril-hook-oem.so:system/lib/libril-qcril-hook-oem.so \
@@ -378,7 +389,6 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/bin/proximity.init:system/bin/proximity.init \
 	device/zte/arthur/prebuilt/b08c/bin/rmt_storage:system/bin/rmt_storage \
 	device/zte/arthur/prebuilt/b08c/bin/sdcard:system/bin/sdcard \
-	device/zte/arthur/prebuilt/b08c/bin/sdptool:system/bin/sdptool \
 	device/zte/arthur/prebuilt/b08c/bin/sprintdiag:system/bin/sprintdiag \
 	device/zte/arthur/prebuilt/b08c/bin/thermald:system/bin/thermald \
 	device/zte/arthur/prebuilt/b08c/bin/usbhub:system/bin/usbhub \
@@ -413,14 +423,6 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxWmaDec.so:system/lib/libOmxWmaDec.so \
         device/zte/arthur/prebuilt/files/lib/hw/lights.msm7x30.so:system/lib/hw/lights.msm7x30.so \
 
-# B08c framework Shit
-PRODUCT_COPY_FILES += \
-        device/zte/arthur/prebuilt/b08c/framework/qcnvitems.jar:system/framework/qcnvitems.jar \
-        device/zte/arthur/prebuilt/b08c/framework/qcrilhook.jar:system/framework/qcrilhook.jar \
-        device/zte/arthur/prebuilt/b08c/framework/sprint.jar:system/framework/sprint.jar \
-        device/zte/arthur/permissions/qcnvitems.xml:system/etc/permissions/qcnvitems.xml \
-        device/zte/arthur/permissions/qcrilhook.xml:system/etc/permissions/qcrilhook.xml
-
 # Bluez
 PRODUCT_COPY_FILES += \
     system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
@@ -429,4 +431,14 @@ PRODUCT_COPY_FILES += \
     system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
     system/bluetooth/data/main.le.conf:system/etc/bluetooth/main.conf \
     system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
+
+
+# Bluetooth
+PRODUCT_PROPERTY_OVERRIDES += \
+  ro.bt.bdaddr_path=/data/misc/bluetooth/bdaddr \
+  qcom.bt.dev_power_class=2 \
+  ro.qualcomm.bluetooth.dun=true \
+  ro.bluetooth.remote.autoconnect=true \
+  ro.qualcomm.bluetooth.ftp=true \
+  ro.bluetooth.request.master=true
 
