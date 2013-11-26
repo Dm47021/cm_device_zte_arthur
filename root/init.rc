@@ -140,16 +140,9 @@ on fs
     mount yaffs2 mtd@persist /persist nosuid nodev
 
 on emmc-fs
+   mount_all /fstab.arthur
+
 # Mount EMMC Partitions
-    wait /dev/block/mmcblk0p15
-    mount ext4 /dev/block/mmcblk0p15 /system rw barrier=1
-    chmod 0777 /system/bin/ext4check.sh
-    #------userdata---------- 
-    wait /dev/block/mmcblk0p18
-    exec /system/bin/sh -c "/system/bin/fixebr.sh mmcblk0"
-    exec /system/bin/format_vfat
-    exec /system/bin/sh -c "/system/bin/ext4check.sh USERDATA /dev/block/mmcblk0p18"    
-    mount ext4 /dev/block/mmcblk0p18 /data nosuid nodev barrier=1 noauto_da_alloc
     #------persist---------- 
     wait /dev/block/mmcblk0p7
     exec /system/bin/sh -c "/system/bin/ext4check.sh PERSIST /dev/block/mmcblk0p7"

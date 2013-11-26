@@ -93,25 +93,22 @@ on post-fs
     # must uncomment this line, otherwise encrypted filesystems
     # won't work.
     # Set indication (checked by vold) that we have finished this action
-    #setprop vold.post_fs_data_done 1
-
-# Include extra init file
-    import /init.cm.rc
+    setprop vold.post_fs_data_done 1
 
     # Mounting of persist is moved to 'on emmc-fs' and 'on fs' sections
     # We chown/chmod /persist again so because mount is run as root + defaults
     chown system system /persist
     chmod 0771 /persist
-    chmod 0664 /sys/bus/platform/devices/msm_sdcc.1/polling
-    chmod 0664 /sys/bus/platform/devices/msm_sdcc.2/polling
-    chmod 0664 /sys/bus/platform/devices/msm_sdcc.3/polling
-    chmod 0664 /sys/bus/platform/devices/msm_sdcc.4/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.2/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
 
     # Chown polling nodes as needed from UI running on system server
-    chown system system /sys/bus/platform/devices/msm_sdcc.1/polling
-    chown system system /sys/bus/platform/devices/msm_sdcc.2/polling
-    chown system system /sys/bus/platform/devices/msm_sdcc.3/polling
-    chown system system /sys/bus/platform/devices/msm_sdcc.4/polling
+    chown system system /sys/devices/platform/msm_sdcc.1/polling
+    chown system system /sys/devices/platform/msm_sdcc.2/polling
+    chown system system /sys/devices/platform/msm_sdcc.3/polling
+    chown system system /sys/devices/platform/msm_sdcc.4/polling
     chmod 0770 /cache
 
     chmod 0666 /sys/class/rfkill/rfkill1/state
@@ -133,9 +130,14 @@ on post-fs
     chown wifi wifi /data/misc/wifi/wpa_supplicant.conf 
     mkdir /data/misc/dhcp 0770 dhcp system
     chown dhcp system /data/misc/dhcp
+
     symlink /persist/qcom_wlan_nv.bin /etc/firmware/wlan/qcom_wlan_nv.bin
     symlink /data/hostapd/qcom_cfg.ini /etc/firmware/wlan/qcom_cfg.ini
     setprop wifi.interface wlan0
+
+    #Create the symlink to qcn wpa_supplicant folder for ar6000 wpa_supplicant
+    mkdir /data/system 0775 system system
+    symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
 #Provide the access to hostapd.conf only to root and group
     mkdir /data/hostapd 0770 hostapd hostapd
@@ -340,6 +342,7 @@ on property:init.svc.qcom-sh=stopped
 
 # Export GPIO56 for fusion targets to enable/disable hub
 service usbhub_init /system/bin/usbhub_init
+   class late_start
    user root
    disabled
    oneshot
@@ -362,25 +365,26 @@ service rmt_storage /sbin/rmt_storage /dev/block/mmcblk0p5 /dev/block/mmcblk0p6 
     user root
     disabled
 
-on property:ro.emmc=1
+on property:ro.emmc=true
     start rmt_storage
 
-service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n
+service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
     class late_start
-    socket bluetooth stream 660 bluetooth bluetooth
-    socket dbus_bluetooth stream 660 bluetooth bluetooth
-    # init.rc does not yet support applying capabilities, so run as root and
-    # let bluetoothd drop uid to bluetooth with the right linux capabilities
-    group bluetooth net_bt_admin misc net_bt_stack
-
-on property:init.svc.bluetoothd=running
-    write /sys/class/bluetooth/hci0/idle_timeout 7000
-    start btwlancoex
-
-on property:init.svc.bluetoothd=stopped
-    stop btwlancoex
+    user bluetooth
+    group qcom_oncrpc bluetooth net_bt_admin
+    disabled
+    oneshot
 
 service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
+    class late_start
+    user bluetooth
+    group bluetooth net_bt_admin inet
+    disabled
+    oneshot
+
+service bt-sap /system/bin/sapd 15
+    user bluetooth
+    group bluetooth net_bt_admin
     class late_start
     disabled
     oneshot
@@ -388,17 +392,8 @@ service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
 service bridgemgrd /system/bin/bridgemgrd
     class late_start
     user radio
-    group radio
+    group radio qcom_diag
     disabled
-
-on property:ro.baseband="msm"
-    # Enable BT-DUN only for all msms
-    setprop ro.qualcomm.bluetooth.dun true
-
-service config_bluetooth /system/bin/sh /system/etc/init.qcom.bt.sh "onboot"
-    class core
-    user root
-    oneshot
 
 service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
     class late_start
@@ -406,44 +401,28 @@ service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
     group system inet
     disabled
 
+service qmiproxy /system/bin/qmiproxy
+    class main
+    user radio
+    group radio qcom_diag
+    disabled
+
+# QMUX must be in multiple groups to support external process connections
+service qmuxd /system/bin/qmuxd
+    class main
+    user radio
+    group radio audio bluetooth gps qcom_diag
+    disabled
+
+on property:init.svc.bluetoothd=stopped
+    stop btwlancoex
+
+on property:ro.baseband="msm"
+    # Enable BT-DUN only for all msms
+    setprop ro.qualcomm.bluetooth.dun true
+
 service at-daemon /system/bin/at-daemon
     class late_start
-
-service qmuxd /system/bin/qmuxd
-    class core
-    user radio
-    group radio
-    disabled
-
-service netmgrd /system/bin/netmgrd
-    class main
-    disabled
-
-on property:ro.use_data_netmgrd=false
-    # netmgr not supported on specific target
-    stop netmgrd
-
-service bt-sap /system/bin/sapd 15
-    class late_start
-    disabled
-    oneshot
-
-service sapd /system/bin/sdptool add --channel=15 SAP
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service qmiproxy /system/bin/qmiproxy
-    class late_start
-    user radio
-    group radio
-    disabled
-
-service dhcp-service /system/bin/netcfg wlan0 dhcp
-    class late_start
-    oneshot
 
 on property:dev.bootcomplete=1
     stop dhcp-service
@@ -486,29 +465,35 @@ service cpwpaconf /system/bin/sh /system/etc/wifi/cpwpaconf.sh
 on property:wifi.interface=wlan0
     start cpwpaconf
 
-service hwmac /system/bin/hwmac
+service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
+    -iwlan0 -Dwext -c/data/misc/wifi/wpa_supplicant.conf -dddd \
+    -e/data/misc/wifi/entropy.bin
+    #   we will start as root and wpa_supplicant will switch to user wifi
+    #   after setting up the capabilities required for WEXT
+    #   user wifi
+    #   group wifi inet keystore
     class main
-    oneshot
-
-# Reload the MAC address
-on property:wlan.driver.status=unloaded
-    start hwmac
-
-service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf -dd
-    class main
-    user root wifi
-    group wifi inet
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -BKL wlan0
-    class core
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKLG
+    class late_start
     disabled
     oneshot
 
-service iprenew_wlan0 /system/bin/dhcpcd -n wlan0
-    class main
+service dhcpcd_p2p /system/bin/dhcpcd -ABKLG
+    class late_start
+    disabled
+    oneshot
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class late_start
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+    class late_start
     disabled
     oneshot
 
@@ -523,14 +508,14 @@ service loc_api_app /system/bin/loc_api_app
 
 service wiperiface /system/bin/wiperiface
     class late_start
-    user location
-    group qcom_oncrpc
+    user gps
+    group gps qcom_oncrpc net_raw
     oneshot
 
 service gpsone_daemon /system/bin/gpsone_daemon
     class late_start
-    user system
-    group system qcom_oncrpc inet
+    user gps
+    group gps qcom_oncrpc inet net_raw
     disabled
 
 service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
@@ -576,6 +561,12 @@ service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
     disabled
     oneshot
 
+service wifi-sdio-on /system/bin/sh /system/etc/init.qcom.sdio.sh
+    class late_start
+    group wifi inet
+    disabled
+    oneshot
+
 service getlog /system/bin/getlogtofile
     class late_start
     user root
@@ -618,7 +609,6 @@ on property:ro.hdmi.enable=true
 
 service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
     class late_start
-    socket hostapd_wlan0 dgram 660 root wifi
     user root
     group root
     oneshot
@@ -626,7 +616,7 @@ service hostapd /system/bin/hostapd -dddd /data/hostapd/hostapd.conf
 
 service ds_fmc_appd /system/bin/ds_fmc_appd -p "rmnet0" -D
     class late_start
-    group radio
+    group radio wifi inet
     disabled
     oneshot
 
@@ -635,7 +625,6 @@ on property:persist.data.ds_fmc_app.mode=1
 
 service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
     class late_start
-    user system
     group qcom_oncrpc net_bt_admin inet radio wifi
     disabled
 
@@ -665,75 +654,16 @@ on property:persist.timed.enable=true
     mkdir /data/time/ 0700
     start time_daemon
 
-service ftp /system/bin/sdptool add --psm=5257 --channel=20 FTP
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service map /system/bin/sdptool add --channel=16 MAS
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
 service ril-daemon1 /system/bin/rild -c 1
     class main
     socket rild1 stream 660 root radio
     socket rild-debug1 stream 660 radio system
     user root
     disabled
-    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc diag qcom_diag log
 
 on property:ro.multi.rild=true
     start ril-daemon1
-
-service dbus /system/bin/dbus-daemon --system --nofork
-    class late_start
-    socket dbus stream 660 bluetooth bluetooth
-    user bluetooth
-    group bluetooth net_bt_admin net_bt_stack
-    disabled
-
-on property:ro.qc.bluetooth.stack=bluez
-    start dbus
-
-service hfag /system/bin/sdptool add --channel=10 HFAG
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service hsag /system/bin/sdptool add --channel=11 HSAG
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service opush /system/bin/sdptool add --channel=12 OPUSH
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service pbap /system/bin/sdptool add --channel=19 PBAP
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
-    class late_start
-    user bluetooth
-    group qcom_oncrpc bluetooth net_bt_admin
-    disabled
-    oneshot
 
 service proximity_init /system/bin/proximity.init -r
     class late_start

@@ -159,8 +159,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Root
 PRODUCT_COPY_FILES += \
     device/zte/arthur/root/default.prop:/root/default.prop \
-    device/zte/arthur/root/init:/root/init \
     device/zte/arthur/root/init.rc:/root/init.rc \
+    device/zte/arthur/root/fstab.arthur:/root/fstab.arthur \
     device/zte/arthur/root/init.arthur.rc:/root/init.arthur.rc \
     device/zte/arthur/root/initlogo.rle:/root/initlogo.rle \
     device/zte/arthur/root/init.qcom.sh:/root/init.qcom.sh \
@@ -325,8 +325,8 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b06ril/lib/libloc-rpc.so:system/lib/libloc-rpc.so \
 	device/zte/arthur/prebuilt/b06ril/lib/librefcne.so:system/lib/librefcne.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-cdma-sms.so:system/lib/libreference-cdma-sms.so \
-        device/zte/arthur/prebuilt/b06ril/lib/librilso:system/lib/libril.so \
-        device/zte/arthur/prebuilt/b06ril/lib/librilso:obj/lib/libril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril.so:system/lib/libril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril.so:obj/lib/libril.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:obj/lib/libreference-ril.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:system/lib/libreference-ril.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libril-qc-1.so:system/lib/libril-qc-1.so \
@@ -394,9 +394,11 @@ PRODUCT_COPY_FILES += \
 # B08c etc
 PRODUCT_COPY_FILES += \
         device/zte/arthur/prebuilt/b08c/etc/media_codecs.xml:system/etc/media_codecs.xml \
+        device/zte/arthur/prebuilt/b08c/etc/media_profiles.xml:system/etc/media_profiles.xml \
 	device/zte/arthur/prebuilt/b08c/etc/thermald.conf:system/etc/thermald.conf \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.bt.sh:system/etc/init.qcom.bt.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.coex.sh:system/etc/init.qcom.coex.sh \
+        device/zte/arthur/prebuilt/b08c/etc/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.fm.sh:system/etc/init.qcom.fm.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
 	device/zte/arthur/prebuilt/b08c/etc/init.qcom.sdio.sh:system/etc/init.qcom.sdio.sh \
@@ -431,10 +433,15 @@ PRODUCT_COPY_FILES += \
 
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
-  ro.bt.bdaddr_path=/data/misc/bluetooth/bdaddr \
   qcom.bt.dev_power_class=2 \
   ro.qualcomm.bluetooth.dun=true \
   ro.bluetooth.remote.autoconnect=true \
   ro.qualcomm.bluetooth.ftp=true \
   ro.bluetooth.request.master=true
+
+# Fix for apollo
+PRODUCT_PROPERTY_OVERRIDES += \
+  lpa.decode=false \
+  tunnel.decode=true \
+  lpa.use-stagefright=true
 
