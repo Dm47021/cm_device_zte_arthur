@@ -28,17 +28,6 @@ PRODUCT_PROPERTY_OVERRIDES+= dalvik.vm.execution-mode=int:jit \
 	ro.com.google.locationfeatures=1 \
 	mobiledata.interfaces = wlan0,rmnet0 \
         dev.dmm.dpd.trigger_delay=30 
-        
-
-# Audio
-PRODUCT_PROPERTY_OVERRIDES += \
-  lpa.decode=true
-
-# Provides overrides to configure the Dalvik heap for a standard tablet device.
-PRODUCT_PROPERTY_OVERRIDES += \
-	dalvik.vm.heapstartsize=5m \
-	dalvik.vm.heapgrowthlimit=48m \
-	dalvik.vm.heapsize=256m
 
 PRODUCT_LOCALES += hdpi
 
@@ -82,17 +71,12 @@ PRODUCT_PACKAGES += \
 
 ## Bluetooth
 PRODUCT_PACKAGES += \
-    hciattach \
-    hciconfig \
     hcitool \
-    sdptool \
-    libbluetooth \
-    libbluetoothd \
-    javax.btobex
+    hci_qcomm_init \
+    hciconfig 
 
 # Camera
 PRODUCT_PACKAGES += \
-    LegacyCamera \
     camera.msm7x30 \
     libcamera 
 
@@ -158,33 +142,24 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Root
 PRODUCT_COPY_FILES += \
-    device/zte/arthur/root/default.prop:/root/default.prop \
-    device/zte/arthur/root/init.rc:/root/init.rc \
-    device/zte/arthur/root/fstab.arthur:/root/fstab.arthur \
-    device/zte/arthur/root/init.arthur.rc:/root/init.arthur.rc \
-    device/zte/arthur/root/initlogo.rle:/root/initlogo.rle \
-    device/zte/arthur/root/init.qcom.sh:/root/init.qcom.sh \
-    device/zte/arthur/root/logo.bmp:/root/logo.bmp \
-    device/zte/arthur/root/ueventd.arthur.rc:/root/ueventd.arthur.rc \
-    device/zte/arthur/root/sbin/diagftmtest:/root/sbin/diagftmtest \
-    device/zte/arthur/root/sbin/hci_qcomm_init:/root/sbin/hci_qcomm_init \
-    device/zte/arthur/root/sbin/iwmulticall:/root/sbin/iwmulticall \
-    device/zte/arthur/root/sbin/iwpriv:/root/sbin/iwpriv \
-    device/zte/arthur/root/sbin/membank.sh:/root/sbin/membank.sh \
-    device/zte/arthur/root/sbin/ptt_socket_app:/root/sbin/ptt_socket_app \
-    device/zte/arthur/root/sbin/rmt_storage:/root/sbin/rmt_storage \
-    device/zte/arthur/root/sbin/usbconfig:/root/sbin/usbconfig
+    device/zte/arthur/root1/default.prop:/root/default.prop \
+    device/zte/arthur/root1/init.rc:/root/init.rc \
+    device/zte/arthur/root1/init.arthur.rc:/root/init.arthur.rc \
+    device/zte/arthur/root1/initlogo.rle:/root/initlogo.rle \
+    device/zte/arthur/root1/init.qcom.rc:/root/init.qcom.rc \
+    device/zte/arthur/root1/init.qcom.sh:/root/init.qcom.sh \
+    device/zte/arthur/root1/logo.bmp:/root/logo.bmp \
+    device/zte/arthur/root1/ueventd.rc:/root/ueventd.rc \
+    device/zte/arthur/root1/sbin/membank.sh:/root/sbin/membank.sh \
+    device/zte/arthur/root1/sbin/rmt_storage:/root/sbin/rmt_storage \
+    device/zte/arthur/root1/fstab.arthur:/root/fstab.arthur \
+    device/zte/arthur/root1/sbin/usbconfig:/root/sbin/usbconfig
 
 # Recovery
 PRODUCT_COPY_FILES += \
 	device/zte/arthur/recovery/root/init.rc:/recovery/root/init.rc \
 	device/zte/arthur/recovery/root/ueventd.rc:/recovery/root/ueventd.rc \
-	device/zte/arthur/root/sbin/diagftmtest:/recovery/root/sbin/diagftmtest \
-	device/zte/arthur/root/sbin/hci_qcomm_init:/recovery/root/sbin/hci_qcomm_init \
-	device/zte/arthur/root/sbin/iwmulticall:/recovery/root/sbin/iwmulticall \
-	device/zte/arthur/root/sbin/iwpriv:/recovery/root/sbin/iwpriv \
-	device/zte/arthur/root/sbin/ptt_socket_app:/recovery/root/sbin/ptt_socket_app \
-	device/zte/arthur/root/sbin/rmt_storage:/recovery/root/sbin/rmt_storage \
+	device/zte/arthur/root/sbin/rmt_storage_recovery:/recovery/root/sbin/rmt_storage \
 	device/zte/arthur/root/sbin/usbconfig:/recovery/root/sbin/usbconfig
 
 PRODUCT_COPY_FILES += \
@@ -274,6 +249,8 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/lib/libmmipl.so:system/lib/libmmipl.so \
 	device/zte/arthur/prebuilt/b08c/lib/libmmjpeg.so:system/lib/libmmjpeg.so \
 	device/zte/arthur/prebuilt/b08c/lib/libmmjpeg.so:obj/lib/libmmjpeg.so \
+	device/zte/arthur/prebuilt/b08c/lib/libcamera.so:system/lib/libcamera.so \
+	device/zte/arthur/prebuilt/b08c/lib/libcamera.so:obj/lib/libcamera.so \
 	device/zte/arthur/prebuilt/b08c/lib/liboemcamera.so:system/lib/liboemcamera.so \
 	device/zte/arthur/prebuilt/b08c/lib/liboemcamera.so:obj/lib/liboemcamera.so \
 
@@ -407,8 +384,6 @@ PRODUCT_COPY_FILES += \
 
 # B08c lib
 PRODUCT_COPY_FILES += \
-	device/zte/arthur/prebuilt/b08c/lib/bluez-plugin/audio.so:system/lib/bluez-plugin/audio.so \
-	device/zte/arthur/prebuilt/b08c/lib/bluez-plugin/input.so:system/lib/bluez-plugin/input.so \
 	device/zte/arthur/prebuilt/b08c/lib/libmmosal.so:system/lib/libmmosal.so \
 	device/zte/arthur/prebuilt/b08c/lib/libmmparser.so:system/lib/libmmparser.so \
 	device/zte/arthur/prebuilt/b08c/lib/libmmparser_divxdrmlib.so:system/lib/libmmparser_divxdrmlib.so \

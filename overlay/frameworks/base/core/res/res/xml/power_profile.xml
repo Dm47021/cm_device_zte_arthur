@@ -1,28 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <device name="Android">
     <item name="none">0</item>
-    <item name="screen.on">0.1</item>
-    <item name="bluetooth.active">0.1</item>
-    <item name="bluetooth.on">0.1</item>
-    <item name="screen.full">0.1</item>
-    <item name="wifi.on">0.1</item>
-    <item name="wifi.active">0.1</item>
-    <item name="wifi.scan">0.1</item>
+    <item name="screen.on">30</item>
+    <item name="bluetooth.active">123</item>
+    <item name="bluetooth.on">0.6</item>
+    <item name="screen.full">140</item>
+    <item name="wifi.on">1.5</item>
+    <item name="wifi.active">120</item>
+    <item name="wifi.scan">220</item>
     <item name="dsp.audio">0.1</item>
     <item name="dsp.video">0.1</item>
-    <item name="radio.active">1</item>
-    <item name="radio.scanning">0.5</item>
-    <item name="gps.on">1</item>
+    <item name="radio.active">230</item>
+    <item name="radio.scanning">70</item>
+    <item name="gps.on">145</item>
     <array name="radio.on">
-        <value>0.2</value>
-        <value>0.1</value>
+        <value>90</value>
+        <value>3</value>
+        <value>0</value>
+        <value>0</value>
     </array>
     <array name="cpu.speeds">
-        <value>400000</value>
+        <value>245760</value>
+        <value>368640</value>
+        <value>768000</value>
+        <value>806400</value>
+        <value>921600</value>
+        <value>1024000</value>
+        <value>1209600</value>
+        <value>1401600</value>
+        <value>1516800</value>
+        <value>1612800</value>
+        <value>1708800</value>
+        <value>1804800</value>
     </array>
-    <item name="cpu.idle">0.1</item>
+    <item name="cpu.idle">2.3</item>
+    <item name="cpu.awake">142</item>
     <array name="cpu.active">
-        <value>0.2</value>
+        <value>33</value>
+        <value>61.6</value>
+        <value>69.6</value>
+        <value>81.3</value>
+        <value>135</value>
+        <value>138.5</value>
+        <value>141</value>
+        <value>156.1</value>
+        <value>165</value>
+        <value>178.2</value>
+        <value>188</value>
+        <value>196.3</value>
+        <value>204</value>        
     </array>
-    <item name="battery.capacity">1000</item>
+    <item name="battery.capacity">1520</item>
 </device>

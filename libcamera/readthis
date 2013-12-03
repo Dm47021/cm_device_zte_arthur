@@ -1,0 +1,13 @@
+ 
+1.Add in boardconfig.mk:
+
+COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT
+BOARD_NEEDS_MEMORYHEAPPMEM := true
+
+
+2.Add in your devices config:
+
+    libcamera \
+    camera.msm7x30
+    
+3.Apply the patch
