@@ -159,7 +159,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/zte/arthur/recovery/root/init.rc:/recovery/root/init.rc \
 	device/zte/arthur/recovery/root/ueventd.rc:/recovery/root/ueventd.rc \
-	device/zte/arthur/root/sbin/rmt_storage_recovery:/recovery/root/sbin/rmt_storage \
+	device/zte/arthur/root/sbin/rmt_storage:/recovery/root/sbin/rmt_storage \
 	device/zte/arthur/root/sbin/usbconfig:/recovery/root/sbin/usbconfig
 
 PRODUCT_COPY_FILES += \
