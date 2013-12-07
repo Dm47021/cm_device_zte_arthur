@@ -302,13 +302,13 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b06ril/lib/libloc-rpc.so:system/lib/libloc-rpc.so \
 	device/zte/arthur/prebuilt/b06ril/lib/librefcne.so:system/lib/librefcne.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-cdma-sms.so:system/lib/libreference-cdma-sms.so \
-        device/zte/arthur/prebuilt/b06ril/lib/libril.so:system/lib/libril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:obj/lib/libreference-ril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:system/lib/libreference-ril.so \
         device/zte/arthur/prebuilt/b06ril/lib/libril.so:obj/lib/libril.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:obj/lib/libreference-ril.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:system/lib/libreference-ril.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libril-qc-1.so:system/lib/libril-qc-1.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libril-qc-qmi-1.so:system/lib/libril-qc-qmi-1.so \
-	device/zte/arthur/prebuilt/b06ril/lib/libril-qcril-hook-oem.so:system/lib/libril-qcril-hook-oem.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril.so:system/lib/libril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril-qc-1.so:system/lib/libril-qc-1.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril-qc-qmi-1.so:system/lib/libril-qc-qmi-1.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril-qcril-hook-oem.so:system/lib/libril-qcril-hook-oem.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libuim.so:system/lib/libuim.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libwms.so:system/lib/libwms.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libwmsts.so:system/lib/libwmsts.so \

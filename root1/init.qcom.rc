@@ -178,15 +178,17 @@ on property:ro.baseband="unknown"
     start port-bridge
 
 service qmiproxy /system/bin/qmiproxy
-    class late_start
+    class main
     user radio
-    group radio
+    group radio qcom_diag
     disabled
 
+# QMUX must be in multiple groups to support external process connections
 service qmuxd /system/bin/qmuxd
     class main
     user radio
-    group radio audio bluetooth
+    group radio audio bluetooth gps qcom_diag
+    disabled
 
 service netmgrd /system/bin/netmgrd
     class main
@@ -353,6 +355,7 @@ on property:init.svc.bootanim=stopped
     start qcom-wifi
 
 service ckpd /system/bin/CKPD-daemon
+    class main
     user system
     group system radio
     disabled
