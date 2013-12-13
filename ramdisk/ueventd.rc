@@ -139,4 +139,7 @@
 /dev/msm_a2dp_in          0640  system       audio
 /dev/msm_amrnb_in         0640  system       audio
 /sys/devices/virtual/usb_composite/*   enable      0664  root   system
-/dev/graphics/fb0         0660  system       camera 
+/dev/graphics/fb0         0666   system      graphics
+
+# proximity
+/dev/taos                 0777   root        root

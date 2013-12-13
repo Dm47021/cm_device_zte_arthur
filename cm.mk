@@ -3,6 +3,7 @@ PRODUCT_RELEASE_NAME := arthur
 
 # Inherit some common CM stuff.
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
+$(call inherit-product, vendor/cm/config/common.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/zte/arthur/full_arthur.mk)

@@ -44,7 +44,6 @@ gsm.operator.numeric=311870
 ro.cdma.default_alpha=Boost Mobile
 ro.cdma.default_numeric=311870
 
-mobiledata.interfaces=wlan0,rmnet0
 
 hwui.render_dirty_regions=false
 hwui.disable_vsync=false
@@ -134,49 +133,6 @@ persist.timed.enable=true
 persist.audio.fluence.mode=endfire
 persist.audio.vr.enable=false
 
-#
-# system prop for opengles version
-#
-# 131072 is decimal for 0x20000 to report version 2
-ro.opengles.version=131072
-ro.opengles.surface.rgb565=true
-
-#
-# system prop for Bluetooth Auto connect for remote initated connections
-#
-ro.bluetooth.remote.autoconnect=true
-
-#
-# system prop for Bluetooth FTP profile
-#
-ro.qualcomm.bluetooth.ftp=true
-
-#
-# system prop for requesting Master role in incoming Bluetooth connection.
-#
-ro.bluetooth.request.master=true
-
-#DRM
-ro.feature.ztedrm.support=1
-
-#
-# System prop for using landscape preview layout in camera
-#
-debug.camera.landscape=true
-
-# Tweaks for SilkUI 
-debug.sf.hw = 1
-debug.enabletr = true
-debug.qctwa.preservebuf = 1
-debug.egl.profiler=1
-debug.gr.swapinterval=1
-persist.sampling_profiler=0
-persist.sys.NV_FPSLIMIT=60
-persist.sys.ui.hw=1
-persist.sys.use_16bpp_alpha=1
-persist.sys.use_dithering=1
-persist.service.lgospd.enable=0
-persist.service.pcsync.enable=0
 
 # Dns
 net.rmnet0.dns1=8.8.8.8
@@ -184,8 +140,6 @@ net.rmnet0.dns2=8.8.4.4
 net.dns1=8.8.8.8
 net.dns2=8.8.4.4
 
-# Memory
-ro.dev.dmm=1
 
 
 
