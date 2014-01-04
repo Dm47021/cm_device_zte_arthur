@@ -154,11 +154,6 @@ on post-fs
 
     chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
 
-# Attempt to fix MSMFB_MIXER_INFO ioctl failed
-    chown system graphics /dev/graphics/fb0
-    # Google Skymap wants to copybit fb0 but requests no special privileges
-    chmod 0666 /dev/graphics/fb0
-
 # create symlink for fb1 as HDMI
     symlink /dev/graphics/fb1 /dev/graphics/hdmi
 

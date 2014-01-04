@@ -84,7 +84,7 @@ BOARD_HAVE_QCOM_FM := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_FM_ENABLED
 
 #Graphics
-BOARD_EGL_CFG := device/zte/arthur/prebuilt/system/lib/egl/egl.cfg
+BOARD_EGL_CFG := device/zte/arthur/prebuilt/files/lib/egl/egl.cfg
 COMMON_GLOBAL_CFLAGS += -DEGL_ALWAYS_ASYNC
 USE_OPENGL_RENDERER := true
 TARGET_NO_HW_VSYNC := true
