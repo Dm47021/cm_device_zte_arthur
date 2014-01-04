@@ -1,5 +1,7 @@
 $(call inherit-product, build/target/product/full.mk)
 
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+
 $(call inherit-product, build/target/product/languages_small.mk)
 $(call inherit-product, vendor/cm/config/common.mk)
 
