@@ -1,37 +1,14 @@
-# Copyright (C) 2012 The CyanogenMod Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-#
-# This file sets variables that control the way modules are built
-# thorughout the system. It should not be used to conditionally
-# disable makefiles (the proper mechanism to control what gets
-# included in a build is to use PRODUCT_PACKAGES in a product
-# definition file).
-#
-
-# WARNING: This line must come *before* including the proprietary
-# variant, so that it gets overwritten by the parent (which goes
-# against the traditional rules of inheritance).
 
 LOCAL_PATH := $(call my-dir)
 
 TARGET_SPECIFIC_HEADER_PATH := device/zte/arthur/include
 
 # Camera
-USE_CAMERA_STUB := false
+USE_CAMERA_STUB := true
 # Camera
 BOARD_NEEDS_MEMORYHEAPPMEM := true
+TARGET_DISABLE_ARM_PIE := true
+BOARD_USE_NASTY_PTHREAD_CREATE_HACK := true
 
 #Board Settings
 TARGET_BOARD_PLATFORM := msm7x30
@@ -42,7 +19,7 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 ARCH_ARM_HAVE_NEON := true
 ARCH_ARM_HAVE_VFP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
-ARCH_ARM_HAVE_ARMV7A_BUG := true
+#ARCH_ARM_HAVE_ARMV7A_BUG := true
 ARCH_ARM_HAVE_ARMV7A := true
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp -march=armv7-a
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp -march=armv7-a
@@ -104,18 +81,17 @@ TARGET_USES_ION := false
 TARGET_USES_HWCOMPOSER := true
 BOARD_USES_GENLOCK := true
 #TARGET_LIBAGL_USE_GRALLOC_COPYBITS := true
-COMMON_GLOBAL_CFLAGS += -DFORCE_CPU_UPLOAD -DQCOM_NO_SECURE_PLAYBACK -DUSES_LEGACY_EGL -DBINDER_COMPAT
-COMMON_GLOBAL_CFLAGS += -DQCOM_ACDB_ENABLED -DLEGACY_QCOM_VOICE -DPOLL_CALL_STATE -DUSE_QMI
+COMMON_GLOBAL_CFLAGS += -DQCOM_NO_SECURE_PLAYBACK -DBINDER_COMPAT
 BOARD_ADRENO_DECIDE_TEXTURE_TARGET := true
-BOARD_USE_SKIA_LCDTEXT := true
+#BOARD_USE_SKIA_LCDTEXT := true
 TARGET_QCOM_HDMI_OUT := false
 ENABLE_WTF_USE_ACCELERATED_COMPOSITING := true
 WEBCORE_INPAGE_VIDEO := true
 TARGET_HAVE_TSLIB := true
 
 #Legacy Graphics 
-COMMON_GLOBAL_CFLAGS += -DUSES_LEGACY_GRAPHICS
-BOARD_USES_LEGACY_GRAPHICS := true
+#COMMON_GLOBAL_CFLAGS += -DUSES_LEGACY_GRAPHICS
+#BOARD_USES_LEGACY_GRAPHICS := true
 
 # Legacy touchscreen support
 BOARD_USE_LEGACY_TOUCHSCREEN := true
@@ -141,7 +117,7 @@ BOARD_MOBILEDATA_INTERFACE_NAME := rmnet0
 BOARD_USES_LEGACY_RIL := true
 
 # Stagefright
-COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DREFRESH_RATE=60 -DQCOM_LEGACY_OMX 
+COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DREFRESH_RATE=60 -DNO_UPDATE_PREVIEW
 
 # Wifi
 # Defines for external/wpa_supplicant_*

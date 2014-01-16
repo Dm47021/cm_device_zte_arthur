@@ -411,73 +411,7 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
 
 void CameraHAL_FixupParams(android::CameraParameters &camParams)
 {
-    const char *supported_iso_modes = "auto,ISO100,ISO200,ISO400,ISO800";
-    const char *preview_sizes = "640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
-    const char *video_sizes =  "720x480,640x480,352x288,320x240,176x144";
-    const char *preferred_size = "720x480";
-    const char *preview_frame_rates  = "30,15";
-    const char *preferred_frame_rate = "30";
-    const char *zoom_ratio_values = "100,110,120,130,140,150,160,170,180";
-    
-    camParams.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT,
-                 CameraParameters::PIXEL_FORMAT_YUV420SP);
-    
-    camParams.set(CameraParameters::KEY_FOCUS_MODE,
-                 CameraParameters::FOCUS_MODE_AUTO);
-    
-    camParams.set(CameraParameters::KEY_ZOOM_RATIOS,
-                            zoom_ratio_values);
-        
-    camParams.setTouchIndexAec(-1, -1);
-    camParams.setTouchIndexAf(-1, -1);
-    camParams.set("touchAfAec-dx","100");
-    camParams.set("touchAfAec-dy","100");
-    camParams.set(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS, "1");
-    camParams.set(CameraParameters::KEY_MAX_NUM_METERING_AREAS, "1");
-        
-    camParams.set(CameraParameters::KEY_FLASH_MODE,
-                  CameraParameters::FLASH_MODE_AUTO);
-    
-    camParams.set(CameraParameters::KEY_ISO_MODE,
-                 CameraParameters::ISO_AUTO);
-    
-    camParams.set(CameraParameters::KEY_SUPPORTED_ISO_MODES, supported_iso_modes);
-    
-    if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
-      camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
-                   preview_sizes);
-   }
-           
-    if (!camParams.get(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
-      camParams.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES,
-                   video_sizes);
-   }   
-   
-   if (!camParams.get(CameraParameters::KEY_VIDEO_SIZE)) {
-      camParams.set("record-size", preferred_size);
-      camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
-   } else {
-      camParams.set("record-size", camParams.get(CameraParameters::KEY_VIDEO_SIZE));
-   }  
-   
-   if (!camParams.get(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO)) {
-      camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
-                   preferred_size);
-   }
-   
-    camParams.set(android::CameraParameters::KEY_MAX_SHARPNESS, "30");
-    camParams.set(android::CameraParameters::KEY_MAX_CONTRAST, "10");
-    camParams.set(android::CameraParameters::KEY_MAX_SATURATION, "10");
-    
-   if (!camParams.get(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
-      camParams.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,
-                   preview_frame_rates);
-   }
 
-   if (!camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
-      camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE,
-                   preferred_frame_rate);
-    }
 }
 
 int camera_set_preview_window(struct camera_device * device,

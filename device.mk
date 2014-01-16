@@ -33,42 +33,39 @@ PRODUCT_PROPERTY_OVERRIDES+= dalvik.vm.execution-mode=int:jit \
 
 PRODUCT_LOCALES += hdpi
 
-#LLVM for RenderScript
-LLVM_ROOT_PATH := external/llvm
-
 # Graphics
 PRODUCT_PACKAGES += \
-        copybit.msm7x30 \
-        gralloc.msm7x30 \
-        hwcomposer.msm7x30 \
-        libgenlock \
-        libmemalloc \
-        liboverlay \
-        libQcomUI \
-        libtilerenderer \
+    copybit.msm7x30 \
+    gralloc.msm7x30 \
+    hwcomposer.msm7x30 \
+    libgenlock \
+    libmemalloc \
+    liboverlay \
+    libQcomUI \
+    libtilerenderer \
+    libc2dcolorconvert
     
 
 # OMX
 PRODUCT_PACKAGES += \
-        libmm-omxcore \
-	libOmxAacEnc \
-	libOmxAmrEnc \
-	libOmxCore \
-	libOmxEvrcEnc \
-	libOmxQcelp13Enc \
-	libOmxVdec \
-	libOmxVenc \
-	libOmxVidEnc \
-        libstagefrighthw 
+    mm-vdec-omx-test \
+    mm-venc-omx-test720p \
+    libdivxdrmdecrypt \
+    libstagefrighthw \
+    libmm-omxcore \
+    libOmxCore \
+    libOmxVdec \
+    libOmxVenc \
+    OMXCore \
+    libOMX_Core \
+    libdomx
 
 # Audio
 PRODUCT_PACKAGES += \
-        audio.a2dp.default \
-        audio_policy.msm7x30 \
-        audio.primary.msm7x30 \
-        audio_policy.conf \
-        libaudioutils \
-        libtinyalsa
+    audio.a2dp.default \
+    audio_policy.msm7x30 \
+    audio.primary.msm7x30 \
+    libaudioutils
 
 
 ## Bluetooth
@@ -95,10 +92,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
         sensors.arthur
  
-# WiFi
-PRODUCT_PACKAGES += \
-    libwpa_client 
- 
 # WarpedParts App
 PRODUCT_PACKAGES += \
         V9Parts
@@ -111,23 +104,13 @@ PRODUCT_PACKAGES += \
 
 # Other       
 PRODUCT_PACKAGES += \
-	applypatch \
-	ast-mm-vdec-omx-test \
-	com.android.future.usb.accessory \
-	libdivxdrmdecrypt \
-	libinvensense_hal \
-	liblasic \
-	liblinenoise \
-	libmllite \
-	libmlplatform \
-	libmmjpeg_interface \
-	libOpenMAXAL \
-	libOpenSLES \
-	liboverlay \
-	make_ext4fs \
-	mm-vdec-omx-property-mgr \
-	mm-venc-omx-test720p \
-	setup_fs 
+    wpa_cli \
+    hostapd \
+    hostapd_cli \
+    make_ext4fs \
+    setup_fs
+
+PRODUCT_TAGS += dalvik.gc.type-precise  
 
 # for bugmailer
 ifneq ($(TARGET_BUILD_VARIANT),user)
@@ -175,25 +158,16 @@ PRODUCT_COPY_FILES += \
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
-        frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml \
 	frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
-	frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
 	frameworks/native/data/etc/android.hardware.telephony.cdma.xml:system/etc/permissions/android.hardware.telephony.cdma.xml \
 	frameworks/native/data/etc/android.hardware.camera.xml:system/etc/permissions/android.hardware.camera.xml \
 	frameworks/native/data/etc/android.hardware.camera.autofocus.xml:system/etc/permissions/android.hardware.camera.autofocus.xml \
-	frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
 	frameworks/native/data/etc/android.hardware.location.xml:system/etc/permissions/android.hardware.location.xml \
 	frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
 	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
 	frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
-	frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
-	frameworks/native/data/etc/android.hardware.touchscreen.xml:system/etc/permissions/android.hardware.touchscreen.xml \
-	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-	frameworks/native/data/etc/android.software.sip.xml:system/etc/permissions/android.software.sip.xml \
 	frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
-	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml \
-	device/zte/arthur/prebuilt/files/etc/permissions/com.google.android.media.effects.xml:/system/etc/permissions/com.google.android.media.effects.xml \
 	frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml \

@@ -39,7 +39,4 @@
 	android:primary="true" 
 	android:removable="true" 
 	android:allowMassStorage="true" />
-    <storage android:mountPoint="/storage/sdcard1" 
-        android:storageDescription="@string/storage_usb" 
-        android:emulated="true" />
 </StorageList>
