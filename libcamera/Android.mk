@@ -1,3 +1,5 @@
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME), arthur)
+
 $(shell mkdir -p $(OUT)/obj/SHARED_LIBRARIES/libcamera_intermediates/)
 $(shell touch $(OUT)/obj/SHARED_LIBRARIES/libcamera_intermediates/export_includes)
 $(shell mkdir -p $(OUT)/obj/SHARED_LIBRARIES/camera.msm7x30_intermediates/)
@@ -37,3 +39,4 @@ ifeq ($(BOARD_USE_REVERSE_FFC), true)
 endif
 
 include $(BUILD_SHARED_LIBRARY)
+endif
