@@ -411,7 +411,36 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
 
 void CameraHAL_FixupParams(android::CameraParameters &camParams)
 {
+    const char *video_sizes =  "720x480,640x480,352x288,320x240,176x144";
+    const char *preferred_size = "720x480";
+    const char *preview_frame_rates  = "15,30,31";
+        
+    camParams.setTouchIndexAec(-1, -1);
+    camParams.setTouchIndexAf(-1, -1);
+    camParams.set("touchAfAec-dx","100");
+    camParams.set("touchAfAec-dy","100");
+    camParams.set(CameraParameters::KEY_MAX_NUM_FOCUS_AREAS, "1");
+    camParams.set(CameraParameters::KEY_MAX_NUM_METERING_AREAS, "1");
 
+    camParams.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT,
+                 CameraParameters::PIXEL_FORMAT_YUV420SP);
+    
+   if (!camParams.get(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
+      camParams.set(CameraParameters::KEY_SUPPORTED_VIDEO_SIZES,
+                   video_sizes);
+   }   
+   
+   if (!camParams.get(CameraParameters::KEY_VIDEO_SIZE)) {
+      camParams.set("record-size", preferred_size);
+      camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
+   } else {
+      camParams.set("record-size", camParams.get(CameraParameters::KEY_VIDEO_SIZE));
+   }  
+   
+   if (!camParams.get(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO)) {
+      camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
+                   preferred_size);
+   }
 }
 
 int camera_set_preview_window(struct camera_device * device,
