@@ -19,10 +19,12 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 ARCH_ARM_HAVE_NEON := true
 ARCH_ARM_HAVE_VFP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
-#ARCH_ARM_HAVE_ARMV7A_BUG := true
 ARCH_ARM_HAVE_ARMV7A := true
+
+TARGET_EXTRA_CFLAGS += $(call cc-option,-march=armv7-a -mtune=cortex-a8)
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp -march=armv7-a
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp -march=armv7-a
+
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 TARGET_BOARD_PLATFORM_FPU := neon
 BOARD_USES_ADRENO_200 := true
@@ -43,6 +45,8 @@ DYNAMIC_SHARED_LIBV8SO := false
 WITH_JIT := true
 ENABLE_JSC_JIT := true
 JS_ENGINE := v8
+WEBCORE_ACCELERATED_SCROLLING := true
+ENABLE_WTF_USE_ACCELERATED_COMPOSITING := true
 
 # Audio
 TARGET_PROVIDES_LIBAUDIO := true
