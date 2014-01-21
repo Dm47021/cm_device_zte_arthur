@@ -20,6 +20,7 @@ debug.qc.hardware=true
 ro.ril.disable.power.collapse=0
 ro.telephony.ril_class=LGEQualcommRIL
 ro.telephony.ril.v3=qcomuiccstack,skipbrokendatacall,signalstrengt​h,datacall,skipnullaid
+ro.telephony.no_icc=true
 ro.ril.def.preferred.network=4
 ro.telephony.default_network=4 
 rild.libpath=/system/lib/libril-qc-1.so
@@ -36,11 +37,14 @@ persist.rild.nitz_short_ons_3=
 ril.subscription.types=NV
 DEVICE_PROVISIONED=1
 
-ro.carrier=Boost Mobile
+ro.cdma.home.operator.alpha=Boost Mobile
 ro.cdma.home.operator.numeric=311870
 ro.cdma.home.operator.alpha="Boost Mobile"
 gsm.operator.alpha=Boost Mobile
 gsm.operator.numeric=311870
+ro.telephony.gsm.ecclist=110,112,119,911
+ro.telephony.cdma.ecclist=110,112,119,911
+ro.telephony.ecclist=08,000,110,112,118,119,911,999
 ro.cdma.default_alpha=Boost Mobile
 ro.cdma.default_numeric=311870
 
@@ -64,7 +68,6 @@ persist.sys.ui.hw=0
 debug.egl.hw=1
 ro.min.fling_velocity=8000
 ro.max.fling_velocity=12000
-persist.sys.use_dithering = 0
 
 #possible screen glitch fix
 debug.gr.numframebuffers=3

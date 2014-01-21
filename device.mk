@@ -78,7 +78,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     camera.msm7x30 \
     libcamera \
-    LegacyCamera
+    LegacyCamera \
+    Torch
 
 # gps
 PRODUCT_PACKAGES += \
