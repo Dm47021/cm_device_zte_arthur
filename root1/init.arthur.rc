@@ -692,8 +692,8 @@ on property:persist.thermal.monitor=true
 
 service time_daemon /system/bin/time_daemon
     class late_start
-    user root
-    group root
+    user system
+    group system qcom_oncrpc
     oneshot
     disabled
 
@@ -719,7 +719,7 @@ service ril-daemon1 /system/bin/rild -c 1
     socket rild-debug1 stream 660 radio system
     user root
     disabled
-    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc diag qcom_diag log
 
 on property:ro.multi.rild=true
     start ril-daemon1
