@@ -279,6 +279,8 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b06ril/lib/libloc-rpc.so:system/lib/libloc-rpc.so \
 	device/zte/arthur/prebuilt/b06ril/lib/librefcne.so:system/lib/librefcne.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libreference-cdma-sms.so:system/lib/libreference-cdma-sms.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril.so:obj/lib/libril.so \
+        device/zte/arthur/prebuilt/b06ril/lib/libril.so:system/lib/libril.so \
         device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:obj/lib/libreference-ril.so \
         device/zte/arthur/prebuilt/b06ril/lib/libreference-ril.so:system/lib/libreference-ril.so \
         device/zte/arthur/prebuilt/b06ril/lib/libril-qc-1.so:system/lib/libril-qc-1.so \
@@ -294,8 +296,6 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b06ril/lib/libpdsm_atl.so:system/lib/libpdsm_atl.so \
 	device/zte/arthur/prebuilt/b06ril/lib/libpdapi.so:system/lib/libpdapi.so \
 	device/zte/arthur/prebuilt/files/lib/libqc-opt.so:system/lib/libqc-opt.so
-
-#       device/zte/arthur/prebuilt/b06ril/lib/libril.so:obj/lib/libril.so \
 
 # Audio fix
 PRODUCT_COPY_FILES += \
