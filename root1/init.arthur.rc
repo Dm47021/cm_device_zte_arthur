@@ -18,9 +18,6 @@ on init
     chmod 0622 /dev/log/system
 # ZTE_SYS_CHENXIHUA_001 end
 
-# DM051213JB DUN
-    mkdir /dev/dun 0666 system system
-
 on post-fs
 # This is also in the init.rc in "on post-fs-data" but if we
 # do not have this section here, the phone will not
