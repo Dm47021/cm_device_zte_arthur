@@ -1,0 +1,3 @@
+# ENABLE SECOND MEMORY BANK
+on property:ro.dev.dmm=1
+    exec /system/bin/sh -c "/sbin/membank.sh"

@@ -1,3 +1,5 @@
+import init.arthur.usb.rc
+
 on early-init
     mount debugfs debugfs /sys/kernel/debug
 
@@ -237,21 +239,16 @@ on boot
     mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
     chmod 2770 /dev/socket/qmux_bluetooth
 
-# THIS IS NEED BECAUSE ZTE DECIDED TO DISABLE USB FUNCTIONS THE THE KERNEL
-# UNTIL  WE HAVE WORKING KERNEL SOURCE CODE WE NEED THIS FOR ADB AND UMS 
-exec /sbin/usbconfig adb
-write /sys/class/android_usb/android0/enable 0
-write /sys/class/android_usb/android0/idVendor 12d1
-write /sys/class/android_usb/android0/idProduct 1038
-write /sys/class/android_usb/android0/f_diag/clients diag
-write /sys/class/android_usb/android0/functions adb
-write /sys/class/android_usb/android0/enable 1
-start adbd
-setprop sys.usb.state adb
-
-# ENABLE SECOND MEMORY BANK
-on property:init.svc.qcom-sh=stopped
-    exec /system/bin/sh -c "/sbin/membank.sh"
+    # USB Configuration.
+    exec /sbin/usbconfig adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 12d1
+    write /sys/class/android_usb/android0/idProduct 1038
+    write /sys/class/android_usb/android0/f_diag/clients diag
+    write /sys/class/android_usb/android0/functions adb
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state adb
     
     #ZTE_TORCH_YTC_20110913 BEGIN
     chown system system /sys/class/leds/flashlight/brightness
