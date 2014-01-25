@@ -249,6 +249,10 @@ on boot
     write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state adb
+
+    # ENABLE SECOND MEMORY BANK
+    on property:init.svc.qcom-sh=stopped
+        exec /system/bin/sh -c "/sbin/membank.sh"
     
     #ZTE_TORCH_YTC_20110913 BEGIN
     chown system system /sys/class/leds/flashlight/brightness
