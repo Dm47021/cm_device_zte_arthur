@@ -132,6 +132,7 @@ PRODUCT_COPY_FILES += \
     device/zte/arthur/root1/default.prop:/root/default.prop \
     device/zte/arthur/root1/init.rc:/root/init.rc \
     device/zte/arthur/root1/init.arthur.rc:/root/init.arthur.rc \
+    device/zte/arthur/root1/init.qcom.rc:/root/init.qcom.rc \
     device/zte/arthur/root1/initlogo.rle:/root/initlogo.rle \
     device/zte/arthur/root1/init.qcom.sh:/root/init.qcom.sh \
     device/zte/arthur/root1/logo.bmp:/root/logo.bmp \
