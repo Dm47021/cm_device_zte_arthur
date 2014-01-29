@@ -53,9 +53,6 @@
 /dev/mt9t013              0660   system     system
 /dev/msm_camera/*         0666   system     camera
 /dev/akm8976_daemon       0640   compass    system
-/dev/akm8976_aot          0640   compass    system
-/dev/akm8973_daemon       0640   compass    system
-/dev/akm8973_aot          0640   compass    system
 /dev/bma150               0640   compass    system
 /dev/cm3602               0640   compass    system
 /dev/akm8976_pffd         0640   compass    system
@@ -140,3 +137,11 @@
 /dev/msm_amrnb_in         0640  system       audio
 /sys/devices/virtual/usb_composite/*   enable      0664  root   system
 /dev/graphics/fb0         0660  system       camera 
+
+# Sensors
+/dev/taos                 0660  system       system
+/dev/ISL                  0660  system       system
+/dev/lis302dl             0660  system       system
+/dev/adxl34x              0660  system       system   
+/dev/akm8962_daemon       0660  compass      system
+/dev/akm8962_aot          0660  compass      system

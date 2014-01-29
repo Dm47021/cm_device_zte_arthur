@@ -17,6 +17,23 @@
 <!-- Passion-specific phone app resources. -->
 <resources>
 
+    <!-- OTA configuration values, used when provisioning CDMA devices.
+         Following defaults values of zero means OTA UI is completely disabled.
+         These OTA UI can be enabled by setting config value to one in the product
+         specific overlay file -->
+
+    <!-- Determine whether we want to display the OTA activation screen, which
+         gives the user option to activate or cancel -->
+    <integer name="OtaShowActivationScreen">1</integer>
+    <!-- Determine whether we should show the "listen for instructions" screen after
+         successfully placing the OTA call -->
+    <integer name="OtaShowListeningScreen">0</integer>
+    <!-- The number of times we should show the activation screen/allow the provisioning
+         to fail before just showing an unsuccessful dialog -->
+    <integer name="OtaShowActivateFailTimes">0</integer>
+    <!-- Determine whether or not we should play the success/failure tone -->
+    <integer name="OtaPlaySuccessFailureTone">0</integer>
+
     <!-- Flag indicating whether the Phone app should ignore
          EVENT_SIM_NETWORK_LOCKED events from the Sim.  If true, this will
          prevent the IccNetworkDepersonalizationPanel from being shown,
@@ -31,4 +48,34 @@
     <!-- This device implements a noise suppression device for in call audio-->
     <bool name="has_in_call_noise_suppression">false</bool>
 
+    <!-- Audio parameter for setting noise suppression-->
+    <string name="in_call_noise_suppression_audioparameter">noise_suppression=on=off</string>
+
+    <!-- Flag indicating if the phone is a world phone -->
+    <bool name="world_phone">false</bool>
+
+    <!-- If true, enable vibration (haptic feedback) for key presses
+         in the EmergencyDialer activity. The pattern is set on a
+         per-platform basis using config_virtualKeyVibePattern.  To be
+         consistent with the regular Dialer, this value should agree
+         with the corresponding values from config.xml under
+         apps/Contacts. -->
+    <bool name="config_enable_dialer_key_vibration">true</bool>
+
+    <!-- Determine whether we want to play local DTMF tones in a call, or
+         just let the radio/BP handle playing of the tones. -->
+    <bool name="allow_local_dtmf_tones">true</bool>
+
+    <!-- If true, show an onscreen "Dial" button in the dialer.
+         In practice this is used on all platforms, even the ones with hard SEND/END
+         keys, but for maximum flexibility it's controlled by a flag here
+         (which can be overridden on a per-product basis.) -->
+    <bool name="config_show_onscreen_dial_button">true</bool>
+
+    <!-- Sprint Message Wait Indicator Quirk
+         If true, message wait indicators are hidden by default on this device
+         unless the user enables it in Call Settings.  This quirk is necessary
+         for the "Phantom Voicemail" issue where notifications that are
+         impossible to dismiss on the Sprint network. -->
+    <bool name="sprint_mwi_quirk">false</bool>
 </resources>
