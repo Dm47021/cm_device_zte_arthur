@@ -21,6 +21,15 @@ ARCH_ARM_HAVE_VFP := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
 ARCH_ARM_HAVE_ARMV7A := true
 
+##### 4.2+ #####
+BOARD_WANTS_EMMC_BOOT := true
+TARGET_ARCH := arm
+TARGET_CPU_VARIANT := scorpion
+TARGET_QCOM_DISPLAY_VARIANT := legacy
+BOARD_EGL_NEEDS_LEGACY_FB := true
+TARGET_ARCH_LOWMEM := true
+###############
+
 # Linaro Optimizations
 ARCH_ARM_HIGH_OPTIMIZATION := true
 TARGET_EXTRA_CFLAGS += $(call cc-option,-march=armv7-a -mtune=cortex-a8)
@@ -31,7 +40,7 @@ TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 TARGET_BOARD_PLATFORM_FPU := neon
 BOARD_USES_ADRENO_200 := true
 
-TARGET_PROVIDES_INIT_RC := true
+TARGET_PROVIDES_INIT_RC := false
 TARGET_PROVIDES_RECOVERY_INIT_RC := true
 TARGET_RECOVERY_INITRC := device/zte/arthur/recovery/root/init.rc
 ARCH_ARM_HAVE_ARMV7A := true
@@ -49,22 +58,16 @@ ENABLE_JSC_JIT := true
 JS_ENGINE := v8
 WEBCORE_ACCELERATED_SCROLLING := true
 ENABLE_WTF_USE_ACCELERATED_COMPOSITING := true
+WEBCORE_INPAGE_VIDEO := true
 
 # Audio
-TARGET_PROVIDES_LIBAUDIO := true
 BOARD_USES_GENERIC_AUDIO := false
-BOARD_USES_QCOM_AUDIO_V2 := true  
-BOARD_USES_QCOM_AUDIO_RESETALL := true
-BOARD_USES_ALSA_AUDIO := true
-BUILD_WITH_ALSA_UTILS := true
+BOARD_USES_QCOM_AUDIO_V2 := true 
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
-
-# FM Radio
-BOARD_HAVE_QCOM_FM := true
-COMMON_GLOBAL_CFLAGS += -DQCOM_FM_ENABLED
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/zte/arthur/bluetooth
 
 #Graphics
 BOARD_EGL_CFG := device/zte/arthur/prebuilt/files/lib/egl/egl.cfg
@@ -96,8 +99,12 @@ WEBCORE_INPAGE_VIDEO := true
 TARGET_HAVE_TSLIB := true
 
 #Legacy Graphics 
-#COMMON_GLOBAL_CFLAGS += -DUSES_LEGACY_GRAPHICS
-#BOARD_USES_LEGACY_GRAPHICS := true
+COMMON_GLOBAL_CFLAGS += -DUSES_LEGACY_GRAPHICS
+BOARD_USES_LEGACY_GRAPHICS := true
+
+COMMON_GLOBAL_CFLAGS += -DREFRESH_RATE=60
+BOARD_EGL_WORKAROUND_BUG_10194508:=true
+
 
 # Legacy touchscreen support
 BOARD_USE_LEGACY_TOUCHSCREEN := true
@@ -123,7 +130,8 @@ BOARD_MOBILEDATA_INTERFACE_NAME := rmnet0
 BOARD_USES_LEGACY_RIL := true
 
 # Stagefright
-COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DREFRESH_RATE=60 -DNO_UPDATE_PREVIEW
+COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DNO_UPDATE_PREVIEW
+#TARGET_QCOM_MEDIA_VARIANT := legacy
 
 # Wifi
 # Defines for external/wpa_supplicant_*
@@ -146,13 +154,15 @@ TARGET_BOOTANIMATION_PRELOAD := true
 
 # Inline Kernel Build
 #TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
-TARGET_KERNEL_CONFIG := arthur_dm_defconfig
+#TARGET_KERNEL_SOURCE := kernel/zte/arthur
+#TARGET_KERNEL_CONFIG := warp_kitkat_defconfig
+
 # Kernel
 TARGET_PREBUILT_KERNEL := device/zte/arthur/kernel
-TARGET_PREBUILT_RECOVERY_KERNEL := device/zte/arthur/recovery/kernel
+TARGET_PREBUILT_RECOVERY_KERNEL := device/zte/arthur/kernel
 BOARD_KERNEL_CMDLINE := console=ttyMSM1,115200 androidboot.hardware=arthur
-BOARD_KERNEL_BASE := 0x00200000
 BOARD_KERNEL_PAGESIZE := 4096
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x00200000
 
 # Partition Info
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
@@ -161,6 +171,8 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 524288000
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2908749824
 BOARD_FLASH_BLOCK_SIZE := 262144
 TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_RECOVERY_FSTAB := device/zte/arthur/root1/fstab.arthur
+RECOVERY_FSTAB_VERSION := 2
 
 BOARD_HAS_NO_SELECT_BUTTON := true
 # Use this flag if the board has a ext4 partition larger than 2gb
@@ -181,7 +193,7 @@ BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 BOARD_UMS_LUNFILE := /sys/devices/platform/msm_hsusb/gadget/lun0/file
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun0/file
 
-# TWRP RECOVERY
+# RECOVERY
 TARGET_RECOVERY_GUI := true
 DEVICE_RESOLUTION := 480x800
 TARGET_RECOVERY_PIXEL_FORMAT := "RGB_565"
@@ -189,13 +201,16 @@ BOARD_HAS_FLIPPED_SCREEN := true
 
 TARGET_OTA_ASSERT_DEVICE := arthur,warp
 TARGET_RECOVERY_INITRC := device/zte/arthur/recovery/root/init.rc
+TARGET_RECOVERY_PRE_COMMAND := "echo 3 > /proc/sys/vm/drop_caches; sync"
+BOARD_USE_CUSTOM_RECOVERY_FONT:=\"font_7x16.h\"
 BOARD_CUSTOM_GRAPHICS := ../../../device/zte/arthur/recovery/graphics.c
 BOARD_CUSTOM_RECOVERY_KEYMAPPING:= ../../device/zte/arthur/recovery/recovery_ui.c
-TARGET_RECOVERY_PRE_COMMAND := "echo 3 > /proc/sys/vm/drop_caches; sync"
+USE_SET_METADATA := false 
+
 
 # Releasetools
-TARGET_PROVIDES_RELEASETOOLS := true
-TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./device/zte/arthur/releasetools/arthur_ota_from_target_files
+#TARGET_PROVIDES_RELEASETOOLS := true
+#TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./device/zte/arthur/releasetools/arthur_ota_from_target_files
 
 # Create Odex Files
 WITH_DEXPREOPT := true

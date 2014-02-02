@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2009, The Android Open-Source Project
- * Copyright (c) 2009-2010, Code Aurora Forum. All rights reserved.
- * Copyright (c) 2011, The CyanogenMod Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +14,9 @@
  * limitations under the License.
  */
 
-#ifndef __MSM_AUDIO_CALIBRATION
-#define __MSM_AUDIO_CALIBRATION
+#ifndef _BDROID_BUILDCFG_H
+#define _BDROID_BUILDCFG_H
 
-#include <sys/cdefs.h>
-
-__BEGIN_DECLS
-
-extern void audcal_initialize(void);
-extern void audcal_deinitialize(void);
-
-__END_DECLS
+#define BTM_DEF_LOCAL_NAME        "ZTE Warp"
 
 #endif

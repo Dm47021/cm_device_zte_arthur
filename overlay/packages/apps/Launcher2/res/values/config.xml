@@ -1,5 +1,4 @@
 <resources>
-    <bool name="config_hardwareAccelerated">true</bool>
     <bool name="is_large_screen">true</bool>
     <bool name="allow_rotation">true</bool>
 </resources>

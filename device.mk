@@ -3,7 +3,6 @@ $(call inherit-product, build/target/product/full.mk)
 $(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
 
 $(call inherit-product, build/target/product/languages_small.mk)
-$(call inherit-product, vendor/cm/config/common.mk)
 
 # The gps config appropriate for this device
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
@@ -78,7 +77,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     camera.msm7x30 \
     libcamera \
-    Camera \
+    LegacyCamera \
     Torch
 
 # gps
@@ -114,15 +113,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_TAGS += dalvik.gc.type-precise  
 
-# for bugmailer
-ifneq ($(TARGET_BUILD_VARIANT),user)
-PRODUCT_PACKAGES += send_bug
-
-PRODUCT_COPY_FILES += \
-         system/extras/bugmailer/bugmailer.sh:system/bin/bugmailer.sh \
-         system/extras/bugmailer/send_bug:system/bin/send_bug
-endif
-
 # Enable repeatable keys in CWM
 PRODUCT_PROPERTY_OVERRIDES += \
         ro.cwm.enable_key_repeat=true
@@ -130,7 +120,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Root
 PRODUCT_COPY_FILES += \
     device/zte/arthur/root1/default.prop:/root/default.prop \
-    device/zte/arthur/root1/init.rc:/root/init.rc \
     device/zte/arthur/root1/init.arthur.rc:/root/init.arthur.rc \
     device/zte/arthur/root1/init.qcom.rc:/root/init.qcom.rc \
     device/zte/arthur/root1/initlogo.rle:/root/initlogo.rle \
@@ -156,7 +145,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_fw.bin:system/etc/firmware/wlan/qcom_fw.bin \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_wapi_fw.bin:system/etc/firmware/wlan/qcom_wapi_fw.bin \
 	device/zte/arthur/prebuilt/b08c/etc/firmware/wlan/qcom_wlan_nv.bin:system/etc/firmware/wlan/qcom_wlan_nv.bin \
-	device/zte/arthur/prebuilt/files/etc/wifi/cpwpaconf.sh:system/etc/wifi/cpwpaconf.sh
+	device/zte/arthur/prebuilt/files/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -372,17 +361,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxQcelp13Dec.so:system/lib/libOmxQcelp13Dec.so \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxQcelp13Enc.so:system/lib/libOmxQcelp13Enc.so \
 	device/zte/arthur/prebuilt/b08c/lib/libOmxWmaDec.so:system/lib/libOmxWmaDec.so \
-        device/zte/arthur/prebuilt/files/lib/hw/lights.msm7x30.so:system/lib/hw/lights.msm7x30.so \
-
-# Bluez
-PRODUCT_COPY_FILES += \
-    system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
-    system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
-    system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
-    system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
-    system/bluetooth/data/main.le.conf:system/etc/bluetooth/main.conf \
-    system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
-
+        device/zte/arthur/prebuilt/files/lib/hw/lights.msm7x30.so:system/lib/hw/lights.msm7x30.so 
 
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
