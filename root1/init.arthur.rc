@@ -387,6 +387,8 @@ on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
     stop netmgrd
 
+setprop persist.data_netmgrd_mtu 1480
+
 service at-daemon /system/bin/at-daemon
     class late_start
 
@@ -650,13 +652,15 @@ service proximity_init /system/bin/proximity.init -r
     disabled
     oneshot
 
+on property:dev.bootcomplete=1
+    start proximity_init
+
 service sprintdiag /system/bin/sprintdiag
     class late_start
     user root
     group radio cache inet misc audio qcom_oncrpc diag
-    
-on property:dev.bootcomplete=1
-    start proximity_init
 
-setprop persist.data_netmgrd_mtu 1480
+on property:sys.radio.shutdown=true
+    write  /sys/devices/platform/rs300000a7.65536/force_sync 1
+    write  /sys/devices/platform/rs300100a7.65536/force_sync 1
 
