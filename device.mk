@@ -67,13 +67,6 @@ PRODUCT_PACKAGES += \
     audio.primary.msm7x30 \
     libaudioutils
 
-
-## Bluetooth
-PRODUCT_PACKAGES += \
-    hcitool \
-    hci_qcomm_init \
-    hciconfig 
-
 # Camera
 PRODUCT_PACKAGES += \
     camera.msm7x30 \
@@ -333,7 +326,6 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/bin/hlr_auc_gw:system/bin/hlr_auc_gw \
         device/zte/arthur/prebuilt/b08c/bin/hostapd:system/bin/hostapd \
         device/zte/arthur/prebuilt/b08c/bin/hostapd_cli:system/bin/hostapd_cli \
-	device/zte/arthur/prebuilt/b08c/bin/init.btprop.sh:system/bin/init.btprop.sh \
         device/zte/arthur/prebuilt/b08c/bin/iprenew:system/bin/iprenew \
 	device/zte/arthur/prebuilt/b08c/bin/loc_api_app:system/bin/loc_api_app \
 	device/zte/arthur/prebuilt/b08c/bin/port-bridge:system/bin/port-bridge \

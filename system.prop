@@ -18,7 +18,7 @@ debug.qc.hardware=true
 
 # Ril
 ro.ril.disable.power.collapse=0
-ro.telephony.ril_class=LGEQualcommRIL
+ro.telephony.ril_class=QualcommSharedRIL
 ro.telephony.ril.v3=qcomuiccstack,skipbrokendatacall,signalstrengt​h,datacall,skipnullaid
 ro.telephony.no_icc=true
 ro.ril.def.preferred.network=4

@@ -52,7 +52,7 @@ int init_nusensors(hw_module_t const* module, hw_device_t** device);
 /*****************************************************************************/
 
 
-#define AKM_DEVICE_NAME             "/dev/akm8962_aot"  // AKM8962 3-axis Electronic Compass
+#define AKM_DEVICE_NAME             "/dev/akm8962_aot"  // AKM8973 3-axis Electronic Compass
 
 #define TAOS_DEVICE_NAME            "/dev/taos"         // TAOS TSL2771 Proximity and Light Sensor
 #define ISL_DEVICE_NAME             "/dev/ISL"          // Intersil ISL29029 Proximity and Light Sensor
