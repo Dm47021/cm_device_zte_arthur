@@ -318,7 +318,7 @@ PRODUCT_COPY_FILES += \
 	device/zte/arthur/prebuilt/b08c/bin/bt_testmode.sh:system/bin/bt_testmode.sh \
 	device/zte/arthur/prebuilt/b08c/bin/btwlancoex:system/bin/btwlancoex \
 	device/zte/arthur/prebuilt/b08c/bin/CKPD-daemon:system/bin/CKPD-daemon \
-	device/zte/arthur/prebuilt/b08c/bin/DrmHost:system/bin/DrmHost \
+	device/zte/arthur/prebuilt/b08c/bin/drmserver:system/bin/drmserver \
 	device/zte/arthur/prebuilt/b08c/bin/ds_fmc_appd:system/bin/ds_fmc_appd \
 	device/zte/arthur/prebuilt/b08c/bin/fm_qsoc_patches:system/bin/fm_qsoc_patches \
 	device/zte/arthur/prebuilt/b08c/bin/getlogtofile:system/bin/getlogtofile \
